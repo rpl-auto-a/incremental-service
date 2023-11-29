@@ -43,3 +43,4 @@ def delete_review(request, id):
             return JsonResponse({'message': 'You are not authorized to delete this review'}, status=403)
     except Review.DoesNotExist:
         return JsonResponse({'message': 'Review not found'}, status=404)
+    
