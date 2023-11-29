@@ -21,7 +21,7 @@ def add_review(request, post_id):
         )
 
         review.save()
-        return HttpResponse(b"CREATED", status=201)
+        return JsonResponse({'message': 'Review created successfully'}, status=200)
     return HttpResponseNotFound()
 
 def get_reviews(request, post_id):
