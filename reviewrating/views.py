@@ -2,6 +2,7 @@ from django.http import HttpResponse, HttpResponseNotFound, JsonResponse
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from reviewrating.models import Review
+from post_properti.models import PostProperti
 from django.core import serializers
 
 # Create your views here.
@@ -11,7 +12,7 @@ def add_review(request, post_id):
         user = request.user
         rating = request.POST.get("rating")
         review = request.POST.get("review")
-        post = Post.objects.get(pk=post_id)
+        post = PostProperti.objects.get(pk=post_id)
 
         review = Review(
             user = user,
@@ -25,7 +26,7 @@ def add_review(request, post_id):
     return HttpResponseNotFound()
 
 def get_reviews(request, post_id):
-    post = Post.objects.get(pk=post_id)
+    post = PostProperti.objects.get(pk=post_id)
     reviews = Review.objects.filter(post=post_id)
 
 def reviews_json(request, post_id):

@@ -1,0 +1,7 @@
+<!-- Placeholder sementara edit_post.html -->
+<h2>Edit Post</h2>
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Save Changes</button>
+</form>
