@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'reviewrating',
     'post_properti',
+    'userData',
 ]
 
 MIDDLEWARE = [
