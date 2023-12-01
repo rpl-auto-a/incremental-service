@@ -6,7 +6,7 @@ class PostProperti(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     nama_properti = models.CharField(max_length=50)
     deskripsi_properti = models.TextField()
-    foto_properti = models.ImageField() 
+    foto_properti = models.URLField()
     kota_properti = models.CharField(max_length=50)
     negara_properti = models.CharField(max_length=50)
     kode_pos_properti = models.CharField(max_length=50)

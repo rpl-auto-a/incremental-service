@@ -6,8 +6,48 @@ from django.core import serializers
 from .forms import PostPropertiForm
 
 # Create your views here.
+from django.contrib.auth.models import User
 
+@login_required
+def add_post(request):
+    if request.method == 'POST':
+        user = request.user
+        nama_properti = request.POST.get("nama")
+        deskripsi_properti = request.POST.get("deskripsi")
+        foto_properti = request.POST.get("foto")
+        kota_properti = request.POST.get("kota")
+        negara_properti = request.POST.get("negara")
+        kode_pos_properti = request.POST.get("kodepos")
 
+        post = PostProperti(
+            user = user,
+            nama_properti = nama_properti,
+            deskripsi_properti = deskripsi_properti,
+            foto_properti = foto_properti,
+            kota_properti = kota_properti,
+            negara_properti = negara_properti,
+            kode_pos_properti = kode_pos_properti,
+        )
+
+        post.save()
+        return HttpResponse(b"CREATED", status=201)
+    return HttpResponseNotFound()
+
+def show_all_posts(request):
+    return render(request, 'all_posts.html')
+
+def show_post_detail(request, id):
+    post = PostProperti.objects.get(pk=id)
+
+    context = {
+        'post': post
+    }
+
+    return render(request, 'post_detail.html', context)
+
+def all_posts_json(request):
+    posts = PostProperti.objects.all()
+    return HttpResponse(serializers.serialize('json', posts))
 
 # Method edit post properti
 @login_required

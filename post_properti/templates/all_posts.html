@@ -1,0 +1,33 @@
+<!-- Placeholder sementara  -->
+<h2>All Posts</h2>
+<!-- Cards -->
+<div class="row" id="posts">
+
+</div>
+
+<script>
+    async function getAllPosts() {
+        return fetch("/json").then((res) => res.json())
+    }
+
+    async function refreshPosts() {
+
+        document.getElementById("posts").innerHTML = ""
+        const posts = await getAllPosts()
+        let htmlString = ``
+
+        if (posts.length==0) {
+            htmlString+=`<span>*No Posts Yet</span>`
+        } else {
+            posts.forEach((post) => {
+                htmlString += `\n<a href='/post/${post.pk}'>
+                                    <div>${post.fields.nama_properti}
+                                    </div>
+                                </a>`
+            })
+        }
+        document.getElementById("posts").innerHTML = htmlString
+    }
+    refreshPosts()
+
+</script>
