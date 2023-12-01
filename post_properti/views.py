@@ -17,11 +17,16 @@ def edit_post(request, post_id):
     if request.method == 'POST':
         edit_form = PostPropertiForm(request.POST, request.FILES, instance=post)
         if edit_form.is_valid():
-            edit_form.save()
-            return redirect('post_detail', post_id=post.id)     # Placeholder sementara untuk kembali ke halaman post detail
-
+            try:
+                edit_form.save()
+                messages.success(request, 'Post updated successfully.')
+                return redirect('post_detail', post_id=post.id)     # Placeholder sementara untuk kembali ke halaman post detail
+            except Exception as e:
+                messages.error(request, f'Error updating post: {e}')
         else:
-            edit_form = PostPropertiForm(instance=post)
+            messages.error(request, 'Error updating post. Please correct the form errors.')
+    else:
+        edit_form = PostPropertiForm(instance=post)
     
     return render(request, 'edit_post.html', {'form': edit_form, 'post_properti': post})    # Placeholder sementara untuk kembali ke halaman edit post
 
@@ -41,6 +46,12 @@ def search_post_by_name(request):
     if request.method == 'POST':
         searched_post = request.POST.get('searched_post')
         posts = PostProperti.objects.filter(nama_properti__icontains=searched_post)
+
+        if posts.exists():
+            messages.success(request, 'Search successful.')
+        else:
+            messages.info(request, 'Properti yang anda cari tidak tersedia.')
+
         return render(request, 'search_post.html', {'posts': posts, 'searched_post': searched_post})
     else:
         return render(request, 'search_post.html')
