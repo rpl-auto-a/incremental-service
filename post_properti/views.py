@@ -1,8 +1,10 @@
 from django.http import HttpResponse, HttpResponseNotFound, JsonResponse
 from django.shortcuts import render, redirect
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from post_properti.models import PostProperti
 from django.core import serializers
+from django.urls import reverse
 from .forms import PostPropertiForm
 
 # Create your views here.
@@ -18,6 +20,7 @@ def add_post(request):
         kota_properti = request.POST.get("kota")
         negara_properti = request.POST.get("negara")
         kode_pos_properti = request.POST.get("kodepos")
+        user_data = request.user.user_data
 
         post = PostProperti(
             user = user,
@@ -27,6 +30,7 @@ def add_post(request):
             kota_properti = kota_properti,
             negara_properti = negara_properti,
             kode_pos_properti = kode_pos_properti,
+            user_data = user_data,
         )
 
         post.save()
@@ -38,9 +42,10 @@ def show_all_posts(request):
 
 def show_post_detail(request, id):
     post = PostProperti.objects.get(pk=id)
-
+    nomor_wa = post.user_data.nomorWA
     context = {
-        'post': post
+        'post': post,
+        'nomor_wa' : nomor_wa
     }
 
     return render(request, 'post_detail.html', context)
@@ -60,7 +65,7 @@ def edit_post(request, post_id):
             try:
                 edit_form.save()
                 messages.success(request, 'Post updated successfully.')
-                return redirect('post_detail', post_id=post.id)     # Placeholder sementara untuk kembali ke halaman post detail
+                return redirect(reverse('show_post_detail', args=[post.id]))
             except Exception as e:
                 messages.error(request, f'Error updating post: {e}')
         else:
@@ -68,18 +73,18 @@ def edit_post(request, post_id):
     else:
         edit_form = PostPropertiForm(instance=post)
     
-    return render(request, 'edit_post.html', {'form': edit_form, 'post_properti': post})    # Placeholder sementara untuk kembali ke halaman edit post
+    return render(request, 'edit_post.html', {'form': edit_form, 'post_properti': post})
 
 # Method untuk show post yang dibuat user yang sedang login
 @login_required
-def show_user_post(request):
+def show_user_posts(request):
     user_logged_in = request.user
     data_post_properti = PostProperti.objects.filter(user=user_logged_in)
 
     context = {
-        'list_todolist_user' : data_post_properti,
+        'list_properti' : data_post_properti,
     }
-    return render(request, context)
+    return render(request, 'show_user_posts.html', context)
 
 # Method untuk mencari post berdasarkan nama properti
 def search_post_by_name(request):

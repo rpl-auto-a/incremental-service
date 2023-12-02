@@ -4,4 +4,11 @@
     {% csrf_token %}
     {{ form.as_p }}
     <button type="submit">Save Changes</button>
+    <button type="button" onclick="cancelUpdate()">Cancel</button>
 </form>
+
+<script>
+    function cancelUpdate() {
+      window.location.href = "{% url 'show_user_posts' %}";
+    }
+    </script>
