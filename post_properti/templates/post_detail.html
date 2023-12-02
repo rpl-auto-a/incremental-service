@@ -7,4 +7,12 @@
     <h2>{{ post.nama_properti }}</h2>
     <p>{{ post.deskripsi_properti }}</p>
     <p>{{ post.kota_properti }}</p>
+    {% if nomor_wa %}
+        <p>Nomor WhatsApp: {{ nomor_wa }}</p>
+        <a href="https://wa.me/{{ nomor_wa }}" target="_blank">
+            <button>Chat on WhatsApp</button>
+        </a>
+    {% else %}
+        <p>Nomor WhatsApp tidak tersedia</p>
+    {% endif %}
 </div>
