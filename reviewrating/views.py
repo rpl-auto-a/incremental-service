@@ -1,9 +1,11 @@
 from django.http import HttpResponse, HttpResponseNotFound, JsonResponse
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 from reviewrating.models import Review
 from post_properti.models import PostProperti
 from django.core import serializers
+from .forms import ReviewForm
 
 # Create your views here.
 def show_reviews(request):
@@ -50,3 +52,23 @@ def delete_review(request, review_id):
     except Review.DoesNotExist:
         return JsonResponse({'message': 'Review not found'}, status=404)
     
+# Method untuk mengedit ReviewRating
+@login_required
+def edit_review(request, review_id):
+    review = Review.objects.get(pk=review_id)
+
+    if request.method == 'POST':
+        edit_form = ReviewForm(request.POST, request.FILES, instance=review)
+        if edit_form.is_valid():
+            try:
+                edit_form.save()
+                messages.success(request, 'Review updated successfully.')
+                return redirect('show_reviews')
+            except Exception as e:
+                messages.error(request, f'Error updating review: {e}')
+        else:
+            messages.error(request, 'Error updating review. Please correct the form errors.')
+    else:
+        edit_form = ReviewForm(instance=review)
+    
+    return render(request, 'edit_review.html', {'form': edit_form, 'review': review})
