@@ -5,6 +5,7 @@ urlpatterns = [
     # other patterns...
     path('', show_all_posts, name='show_all_posts'),
     path('<int:id>/', show_post_detail, name='show_post_detail'),
+    path('new/', new_post, name='new_post'),
     path('<int:id>/reviews/', include('reviewrating.urls')),
     path('add_post/', add_post, name='add_post'),
     path('edit_post/<int:post_id>/', edit_post, name='edit_post'),
