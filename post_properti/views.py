@@ -6,10 +6,11 @@ from post_properti.models import PostProperti
 from userData.models import UserData
 from django.core import serializers
 from django.urls import reverse
+
+from userData.models import UserData
 from .forms import PostPropertiForm, FilterForm
 
 # Create your views here.
-from django.contrib.auth.models import User
 
 @login_required
 def add_post(request):
@@ -42,10 +43,10 @@ def show_all_posts(request):
 def show_post_detail(request, id):
     post = PostProperti.objects.get(pk=id)
     user_data = UserData.objects.get(user=post.user)
-    nomor_wa = user_data.nomorWA
+
     context = {
         'post': post,
-        'nomor_wa' : nomor_wa
+        'nomor_wa' : user_data.nomorWA
     }
 
     return render(request, 'post_detail.html', context)
