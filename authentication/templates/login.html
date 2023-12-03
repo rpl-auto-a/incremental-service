@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block meta %}
+    <title>Login</title>
+{% endblock meta %}
+
+{% block content %}
+<div>
+    <form method="POST" action="">
+        {% csrf_token %}
+        <table>
+            <tr>
+                <td class="text-gray-700 font-medium text-sm md:text-base">Username</td>
+            </tr>
+            <tr>
+                <td class="py-2"><input type="text" name="username" placeholder="Username" class="form-control text-sm md:text-base bg-gray-100 py-3 px-3 md:px-4 border-2 w-full focus:shadow-lg"></td>
+            </tr>
+            <tr>
+                <td class="pt-6 text-gray-700 font-medium text-sm md:text-base">Password</td>
+            </tr>
+            <tr>
+                <td class="py-2"><input type="password" name="password" placeholder="Password" class="form-control text-sm md:text-base bg-gray-100 py-3 px-3 md:px-4 border-2 w-full focus:shadow-lg"></td>
+            </tr>            
+            <tr>
+                <td class="pt-10 pb-4 flex justify-center text-sm md:text-base">
+                    <input class="btn login_btn transition-color ease-in-out duration-100 bg-blue-500 hover:bg-blue-700 text-white font-medium rounded-full md:px-36 px-24 py-3 cursor-pointer" type="submit" value="Login">
+                </td>
+            </tr>
+            {% if messages %}
+            <tr>
+                {% for message in messages %}
+                <td class="text-red-500 text-center pt-2 md:text-sm text-xs md:text-base">{{ message }}</td>
+                {% endfor %}
+            </tr>
+            {% endif %} 
+        </table>
+    </form>
+</div>
+
+{% endblock content %}

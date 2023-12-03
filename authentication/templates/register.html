@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+
+{% block meta %}
+    <title>Register</title>
+{% endblock meta %}
+
+{% block content %}
+<div>
+    <form id="reg-form" method="POST">
+        {% csrf_token %}
+        <div>
+            <label for="username">Username:</label>
+            <div>
+                <input type="text" name="username" placeholder="username123" maxlength="25" required id="username"/>
+            </div>
+        </div>
+        <div>
+            <label for="name">Full Name:</label>
+            <div>
+                <input type="text" name="name" placeholder="Your Name" required id="name"/>
+            </div>
+        </div>
+        <div>
+            <label for="nomorWA">WhatsApp Number:</label>
+            <div>
+                <input name="nomorWA" placeholder="+62123456789" maxlength="15" required id="nomorWA"/>
+            </div>
+        </div>
+        <div>
+            <label for="password1">Password:</label>
+            <div>
+                <input type="password" name="password1" required id="password1"/>
+            </div>
+        </div>
+        <div>
+            <label for="password2">Password Confirmation:</label>
+            <div>
+                <input type="password" name="password2" required id="password2"/>
+            </div>
+        </div>
+    </form>
+
+    {% if form.errors %}
+    <div class="errors mt-2 mb-2">
+    {% else %}
+    <div class="errors mt-10">
+    {% endif %}
+        {% if form.errors %}
+        {% for errors in form.errors.values %}
+        {% for error in errors %} 
+        <p class="text-red-500 text-xs">{{ error }}</p>
+        {% endfor %}
+        {% endfor %}
+        <p class="text-red-500 text-xs pt-3">Please try again.</p>
+        {% endif %}
+    </div>
+    <button id="submit-btn" form="reg-form" class="text-sm text-[#002F6E] w-full bg-[#b7d5eb] transition duration-200 hover:bg-[#80badc] rounded-lg py-2" type="submit" value="Register">Register</button>
+    <p class="text-sm pt-6 text-center">Already have an account? <a class="text-[#247FB8] hover:text-[#003F7E]" href="{% url 'authentication:login_user' %}">Login</a></p>
+</div>        
+{% endblock content %}
