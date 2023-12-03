@@ -3,6 +3,7 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from post_properti.models import PostProperti
+from userData.models import UserData
 from django.core import serializers
 from django.urls import reverse
 from .forms import PostPropertiForm, FilterForm
@@ -20,7 +21,6 @@ def add_post(request):
         kota_properti = request.POST.get("kota")
         negara_properti = request.POST.get("negara")
         kode_pos_properti = request.POST.get("kodepos")
-        user_data = request.user.user_data
 
         post = PostProperti(
             user = user,
@@ -30,7 +30,6 @@ def add_post(request):
             kota_properti = kota_properti,
             negara_properti = negara_properti,
             kode_pos_properti = kode_pos_properti,
-            user_data = user_data,
         )
 
         post.save()
@@ -42,7 +41,8 @@ def show_all_posts(request):
 
 def show_post_detail(request, id):
     post = PostProperti.objects.get(pk=id)
-    nomor_wa = post.user_data.nomorWA
+    user_data = UserData.objects.get(user=post.user)
+    nomor_wa = user_data.nomorWA
     context = {
         'post': post,
         'nomor_wa' : nomor_wa
