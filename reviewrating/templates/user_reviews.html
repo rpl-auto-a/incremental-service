@@ -1,6 +1,6 @@
 <div class="mb-1">
     <div>
-        <h2 class="text-gray-700 font-semibold mt-1">{{angka}} Users reviews</h2>
+        <h2 class="text-gray-700 font-semibold mt-1">{{total_reviews}} Users reviews</h2>
     </div>
     
     <div class="border-b -mx-8 px-8 pb-3">
@@ -10,11 +10,11 @@
             </div>
             <div class="pl-2 w-4/5">
                 <div class="bg-gray-300 w-full rounded-lg h-2">
-                    <div class="bg-blue-500 rounded-lg h-2" style="width: {{angka}}%"></div>
+                    <div class="bg-blue-500 rounded-lg h-2" style="width: {{ five_star_percent }}%"></div>
                 </div>
             </div>
             <div class="w-1/5 text-gray-700 pl-3">
-                <span class="text-sm">51%</span>
+                <span class="text-sm">{{ five_star_percent }}%</span>
             </div>
         </div>
         <div class="flex items-center mt-1">
@@ -23,11 +23,11 @@
                 </div>
                 <div class="pl-2 w-4/5">
                     <div class="bg-gray-300 w-full rounded-lg h-2">
-                        <div class="w-1/5 bg-blue-500 rounded-lg h-2"></div>
+                        <div class="w-1/5 bg-blue-500 rounded-lg h-2" style="width: {{ four_star_percent }}%"></div>
                     </div>
                 </div>
                 <div class="w-1/5 text-gray-700 pl-3">
-                    <span class="text-sm">17%</span>
+                    <span class="text-sm">{{ four_star_percent }}%</span>
                 </div>
         </div>
         <div class="flex items-center mt-1">
@@ -36,11 +36,11 @@
             </div>
             <div class="pl-2 w-4/5">
                 <div class="bg-gray-300 w-full rounded-lg h-2">
-                    <div class=" w-3/12 bg-blue-500 rounded-lg h-2"></div>
+                    <div class=" w-3/12 bg-blue-500 rounded-lg h-2" style="width: {{ three_star_percent }}%"></div>
                 </div>
             </div>
             <div class="w-1/5 text-gray-700 pl-3">
-                <span class="text-sm">19%</span>
+                <span class="text-sm">{{ three_star_percent }}%</span>
             </div>
         </div>
         <div class="flex items-center mt-1">
@@ -49,11 +49,11 @@
             </div>
             <div class="pl-2 w-4/5">
                 <div class="bg-gray-300 w-full rounded-lg h-2">
-                    <div class=" w-1/5 bg-blue-500 rounded-lg h-2"></div>
+                    <div class=" w-1/5 bg-blue-500 rounded-lg h-2" style="width: {{ two_star_percent }}%"></div>
                 </div>
             </div>
             <div class="w-1/5 text-gray-700 pl-3">
-                <span class="text-sm">8%</span>
+                <span class="text-sm">{{ two_star_percent }}%</span>
             </div>
         </div>
         <div class="flex items-center mt-1">
@@ -62,15 +62,17 @@
             </div>
             <div class="pl-2 w-4/5">
                 <div class="bg-gray-300 w-full rounded-lg h-2">
-                    <div class=" w-2/12 bg-blue-500 rounded-lg h-2"></div>
+                    <div class=" w-2/12 bg-blue-500 rounded-lg h-2" style="width: {{one_star_percent}}%"></div>
                 </div>
             </div>
             <div class="w-1/5 text-gray-700 pl-3">
-                <span class="text-sm">5%</span>
+                <span class="text-sm">{{ one_star_percent }}%</span>
             </div>
         </div>
     </div>
-    <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full mt-3">
-        Add Review
-    </button>
+    <a href="{% url 'review:add_review' post.pk %}">
+        <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full mt-3">
+            Add Review
+        </button>
+    </a>
 </div>

@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block meta %}
+    <title>Add Review | RentAcross</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+{% endblock meta %}
+
+{% block content %}
+    <div class="flex justify-center items-center min-h-screen py-10">
+        <div class="md:w-3/5 w-3/4 px-10 flex flex-col gap-2 p-5 bg-white text-white rounded-2xl shadow-lg">
+            <h1 class="py-5 text-2xl text-black font-bold">Add Your Review!</h1>
+            <form id="reg-form" method="POST">
+                <label for="rating" class="text-black"></label>
+                <div class="rating">
+                    <input name="stars" id="e5" type="radio"></a><label for="e5">☆</label>
+                    <input name="stars" id="e4" type="radio"></a><label for="e4">☆</label>
+                    <input name="stars" id="e3" type="radio"></a><label for="e3">☆</label>
+                    <input name="stars" id="r2" type="radio"></a><label for="e2">☆</label>
+                    <input name="stars" id="r1" type="radio"></a><label for="e1">☆</label>
+                </div>
+                <label for="review" class="text-black">Review:</label>
+                <div>
+                    <textarea class="w-full text-black border-gray-100 border-2 rounded-lg px-2 py-2" type="text" name="review" placeholder="Let us know your thoughts..." maxlength="25" required id="review"></textarea>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    
+{% endblock content %}
