@@ -39,41 +39,15 @@ def add_review(request, id):
     form = ReviewForm(request.POST or None)
 
     if form.is_valid() and request.method == "POST":
-        form.save()
-        return HttpResponseRedirect(reverse('review:show_reviews'))
+        review = form.save(commit=False)
+        review.user = request.user
+        review.post = PostProperti.objects.get(pk=id)
+        review.save()
+        return HttpResponseRedirect(reverse('review:show_reviews', kwargs={"id": id}))
     
     context = {'form': form}
     return render(request, "add_review.html", context)
 
-    """ if request.method == 'POST':
-        user = request.user
-        rating = request.POST.get("rating")
-        review = request.POST.get("review")
-        post = PostProperti.objects.get(pk=post_id)
-
-        review = Review(
-            user = user,
-            rating = rating,
-            review = review,
-            post = post
-        )
-
-        review.save()
-        return JsonResponse({'message': 'Review created successfully'}, status=200)
-    return HttpResponseNotFound() """
-
-def delete_review(request, review_id):
-    try:
-        review = Review.objects.get(pk=review_id)
-
-        if request.user == review.user:
-            review.delete()
-            return JsonResponse({'message': 'Review deleted successfully'}, status=200)
-        else:
-            return JsonResponse({'message': 'You are not authorized to delete this review'}, status=403)
-    except Review.DoesNotExist:
-        return JsonResponse({'message': 'Review not found'}, status=404)
-    
 # Method untuk mengedit ReviewRating
 @login_required
 def edit_review(request, review_id):
