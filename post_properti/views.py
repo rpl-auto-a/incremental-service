@@ -1,4 +1,4 @@
-from django.http import HttpResponse, HttpResponseNotFound, JsonResponse
+from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseNotFound, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -37,6 +37,41 @@ def add_post(request):
         post.save()
         return HttpResponse(b"CREATED", status=201)
     return HttpResponseNotFound()
+
+def new_post(request):
+    if request.method == "POST":
+        user = request.user
+        nama = request.POST.get('nama', '')
+        deskripsi = request.POST.get('deskripsi', '')
+        foto = request.POST.get('foto', '')
+        kota = request.POST.get('kota', '')
+        negara = request.POST.get('negara', '')
+        kodepos = request.POST.get('kodepos', '')
+
+        if not (nama and deskripsi and foto and kota and negara and kodepos):
+            return HttpResponseBadRequest("Missing required fields")
+
+        form_data = {
+            'user': user,
+            'nama_properti': nama,
+            'deskripsi_properti': deskripsi,
+            'foto_properti': foto,
+            'kota_properti': kota,
+            'negara_properti': negara,
+            'kode_pos_properti': kodepos,
+        }
+
+        form = PostPropertiForm(form_data)
+
+        if form.is_valid():
+            post_properti_instance = form.save(commit=False)
+            post_properti_instance.user = request.user
+            post_properti_instance.save()
+            return redirect(reverse('show_user_posts'))
+        else:
+            return render(request, "new_post.html", {'form': form})
+
+    return render(request, "new_post.html")
 
 def show_all_posts(request):
     return render(request, 'all_posts.html')
