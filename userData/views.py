@@ -38,3 +38,7 @@ def favorites_json(request):
     user_data = UserData.objects.get(pk=user.id)
     favorites = user_data.postFavorit.all()
     return HttpResponse(serializers.serialize('json', favorites), content_type='application/json')
+
+@login_required
+def favorite(request):
+    return render(request, 'favorite_page.html')

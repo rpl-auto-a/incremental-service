@@ -22,4 +22,5 @@ urlpatterns = [
     path('', include('main.urls')),
     path('auth/', include('authentication.urls')),
     path('reviewrating/', include('reviewrating.urls')),
+    path('user/', include('userData.urls')),
 ]
