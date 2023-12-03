@@ -1,0 +1,39 @@
+{% load static %}
+<!DOCTYPE html>
+
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <title>RentAcross</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;900&family=Raleway:wght@400;500;700;900&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="/static/style.css">
+        <script>
+            tailwind.config = {
+                content: ["./templates/**/*.html", "./main/templates/*.html"],
+                theme: {
+                    extend: {
+                    fontFamily: {
+                        raleway: ["Raleway", "sans-serif"],
+                        rubik: ["Rubik", "sans-serif"]
+                    },
+                    },
+                },
+                plugins: [],
+            }
+        </script>
+        {% block meta %}
+        {% endblock meta %}
+    </head>
+    {% block header %}
+    {% endblock header %}
+    <body class="bg-blue-50 font-rubik">
+        {% block content %}
+        {% endblock content %}
+    </body>
+    {% block script %}
+    {% endblock script %}
+</html>

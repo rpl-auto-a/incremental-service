@@ -1,6 +1,5 @@
 from django.db import models
 from django.contrib.auth.models import User
-from userData.models import UserData
 
 # Create your models here.
 class PostProperti(models.Model):
@@ -11,4 +10,3 @@ class PostProperti(models.Model):
     kota_properti = models.CharField(max_length=50)
     negara_properti = models.CharField(max_length=50)
     kode_pos_properti = models.CharField(max_length=50)
-    user_data = models.ForeignKey(UserData, on_delete=models.CASCADE)
