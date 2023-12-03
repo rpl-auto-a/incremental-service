@@ -1,6 +1,4 @@
-from django.http import HttpResponse, HttpResponseNotFound, JsonResponse, HttpResponseRedirect
-from django.shortcuts import render
-from django.http import HttpResponse, HttpResponseNotFound, JsonResponse
+from django.http import JsonResponse, HttpResponseRedirect
 from django.shortcuts import redirect, render
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -8,7 +6,6 @@ from django.urls import reverse
 from post_properti.models import PostProperti
 from reviewrating.models import Review
 from reviewrating.forms import ReviewForm
-from .forms import ReviewForm
 
 # Create your views here.
 def show_reviews(request, id):
