@@ -6,7 +6,20 @@ from post_properti.models import PostProperti
 from django.core import serializers
 
 # Create your views here.
-@login_required
+def show_reviews(request):
+    reviews = Review.objects.filter(post=1)
+    total_reviews = reviews.count()
+    context = {
+        "reviews": reviews,
+        "test": "test",
+        "total_reviews": total_reviews,
+        "angka": int(153/400 * 100),
+        "star": 5,
+    }
+    return render(request, "reviews.html", context)
+    
+
+@login_required(login_url="authentication:login_user")
 def add_review(request, post_id):
     if request.method == 'POST':
         user = request.user
@@ -25,17 +38,9 @@ def add_review(request, post_id):
         return JsonResponse({'message': 'Review created successfully'}, status=200)
     return HttpResponseNotFound()
 
-def get_reviews(request, post_id):
-    post = PostProperti.objects.get(pk=post_id)
-    reviews = Review.objects.filter(post=post_id)
-
-def reviews_json(request, post_id):
-    reviews = Review.objects.filter(post=post_id)
-    return HttpResponse(serializers.serialize('json', reviews))
-
-def delete_review(request, id):
+def delete_review(request, review_id):
     try:
-        review = Review.objects.get(pk=id)
+        review = Review.objects.get(pk=review_id)
 
         if request.user == review.user:
             review.delete()
