@@ -7,7 +7,7 @@
 
 <script>
     async function getAllPosts() {
-        return fetch("/json").then((res) => res.json())
+        return fetch("{% url 'all_posts_json' %}").then((res) => res.json())
     }
 
     async function refreshPosts() {
@@ -20,10 +20,12 @@
             htmlString+=`<span>*No Posts Yet</span>`
         } else {
             posts.forEach((post) => {
-                htmlString += `\n<a href='/post/${post.pk}'>
-                                    <div>${post.fields.nama_properti}
-                                    </div>
-                                </a>`
+                const postDetailUrl = `/posts/${post.pk}/`;  // Construct the URL manually
+                htmlString += `
+                <a href="${postDetailUrl}">
+                    <div>${post.fields.nama_properti}
+                    </div>
+                </a>`
             })
         }
         document.getElementById("posts").innerHTML = htmlString
