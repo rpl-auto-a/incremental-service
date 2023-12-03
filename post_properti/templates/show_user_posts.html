@@ -1,5 +1,5 @@
 <!-- show_user_posts.html -->
-<!-- {% extends 'base.html' %} -->
+{% extends 'base.html' %}
 
 {% block content %}
   <h2>Your Posts</h2>
@@ -9,7 +9,7 @@
         <li>
           <p>{{ post.nama_properti }}</p>
           <p>{{ post.deskripsi_properti }}</p>
-          <a href="{% url 'edit_post' post.id %}">Edit</a>
+          <a href="{% url 'edit_post' post.pk %}">Edit</a>
         </li>
       {% endfor %}
     </ul>
