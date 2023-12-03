@@ -3,11 +3,12 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from post_properti.models import PostProperti
+from userData.models import UserData
 from django.core import serializers
 from django.urls import reverse
 
 from userData.models import UserData
-from .forms import PostPropertiForm
+from .forms import PostPropertiForm, FilterForm
 
 # Create your views here.
 
@@ -21,7 +22,6 @@ def add_post(request):
         kota_properti = request.POST.get("kota")
         negara_properti = request.POST.get("negara")
         kode_pos_properti = request.POST.get("kodepos")
-        user_data = request.user.user_data
 
         post = PostProperti(
             user = user,
@@ -31,7 +31,6 @@ def add_post(request):
             kota_properti = kota_properti,
             negara_properti = negara_properti,
             kode_pos_properti = kode_pos_properti,
-            user_data = user_data,
         )
 
         post.save()
@@ -79,6 +78,7 @@ def show_all_posts(request):
 def show_post_detail(request, id):
     post = PostProperti.objects.get(pk=id)
     user_data = UserData.objects.get(user=post.user)
+
     context = {
         'post': post,
         'nomor_wa' : user_data.nomorWA
@@ -137,3 +137,29 @@ def search_post_by_name(request):
     else:
         return render(request, 'search_post.html')
 
+# Method untuk memfilter post berdasarkan negara dan kota
+# @login_required
+def filter_posts(request):
+    form = FilterForm()
+
+    negara_choices = PostProperti.objects.values_list('negara_properti', flat=True).distinct()
+    form.fields['negara'].choices = [(negara, negara) for negara in negara_choices]
+
+    if request.method == 'POST':
+        form = FilterForm(request.POST)
+
+        if form.is_valid():
+            negara = form.cleaned_data['negara']
+            kota_choices = PostProperti.objects.filter(negara_properti=negara).values_list('kota_properti', flat=True).distinct()
+            form.set_kota_choices([(kota, kota) for kota in kota_choices])
+
+            kota = form.cleaned_data['kota'] if 'kota' in form.cleaned_data else None
+
+            if kota:
+                posts = PostProperti.objects.filter(negara_properti=negara, kota_properti=kota)
+            else:
+                posts = PostProperti.objects.filter(negara_properti=negara)
+
+            return render(request, 'filtered_posts.html', {'posts': posts, 'form': form})
+
+    return render(request, 'filter_posts.html', {'form': form})
