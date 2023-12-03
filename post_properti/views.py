@@ -92,8 +92,8 @@ def all_posts_json(request):
 
 # Method edit post properti
 @login_required
-def edit_post(request, post_id):
-    post = PostProperti.objects.get(pk=post_id)
+def edit_post(request, id):
+    post = PostProperti.objects.get(pk=id)
 
     if request.method == 'POST':
         edit_form = PostPropertiForm(request.POST, request.FILES, instance=post)
@@ -101,7 +101,7 @@ def edit_post(request, post_id):
             try:
                 edit_form.save()
                 messages.success(request, 'Post updated successfully.')
-                return redirect(reverse('show_post_detail', args=[post.id]))
+                return redirect('show_user_posts')
             except Exception as e:
                 messages.error(request, f'Error updating post: {e}')
         else:

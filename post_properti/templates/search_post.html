@@ -1,19 +1,24 @@
-<!-- Placeholder sementara search_properties.html -->
-<h2>Search Results for "{{ searched_post }}"</h2>
-{% if messages %}
-        <ul class="messages">
-            {% for message in messages %}
-                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-            {% endfor %}
-        </ul>
-{% endif %}
+<!-- search_post.html -->
+{% extends 'base.html' %}
 
-{% if posts %}
-    <ul>
+{% block content %}
+  <div class="container mx-auto my-8">
+    <h1 class="text-3xl font-bold mb-4">Search Posts</h1>
+    
+    {% if posts %}
+      <h2 class="text-xl font-semibold mt-8">Search Results for "{{ searched_post }}"</h2>
+      <ul class="mt-4">
         {% for post in posts %}
-            <li>{{ post.nama_properti }} - {{ post.deskripsi_properti }}</li>
+          <li class="mb-4">
+            <a href="{% url 'show_post_detail' post.id %}" class="text-blue-500 hover:underline">
+              {{ post.nama_properti }}
+            </a>
+          </li>
         {% endfor %}
-    </ul>
-{% else %}
-    <p>No properties found for "{{ searched_post }}".</p>
-{% endif %}
+      </ul>
+    {% else %}
+      <p class="mt-8">No properties found for "{{ searched_post }}".</p>
+      
+    {% endif %}
+  </div>
+{% endblock %}

@@ -30,6 +30,25 @@
                 <a class="nav-btn relative bg-[#003f7e] rounded-xl px-3 py-1 text-white" href="{% url 'new_post' %}">Create Post</a>
                 {% endif %}
             </div>
+            <div class="relative">
+                <form id="navbar-search-form" method="post" action="{% url 'search_post' %}" class="flex items-center">
+                    {% csrf_token %}
+                    <input
+                      type="text"
+                      name="searched_post"
+                      id="navbar-search-input"
+                      placeholder="Search Post"
+                      class="px-4 py-2 border border-gray-300 rounded-l focus:outline-none focus:border-blue-500"
+                    />
+                    <button
+                      type="button"
+                      onclick="validateAndSubmitSearch()"
+                      class="bg-blue-500 text-white px-4 py-2 rounded-r hover:bg-blue-700 focus:outline-none"
+                    >
+                      Search
+                    </button>
+                  </form>
+            </div>
         </div>
         <p></p>
         {% if user.is_authenticated %}
@@ -84,3 +103,16 @@
         {% endif %}
     </div>
 </nav>
+
+<script>
+    function validateAndSubmitSearch() {
+      var searchInput = document.getElementById('navbar-search-input').value.trim();
+    
+      if (searchInput !== '') {
+        document.getElementById('navbar-search-form').submit();
+      } else {
+        // Optionally, you can provide feedback to the user about the empty search field
+        alert('Please enter the properties name.');
+      }
+    }
+    </script>
