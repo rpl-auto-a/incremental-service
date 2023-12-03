@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block meta %}
-<title>Home | RentAcross</title>
+    <title>Reviews | RentAcross</title>
 {% endblock meta %}
 
 
@@ -14,175 +14,46 @@
         
         <!-- Item Container -->
         <div class="flex flex-col gap-3 mt-5">
-            <div class="flex flex-col gap-4 bg-gray-50 p-4 rounded-xl shadow-lg">
-                <!-- Profile and Rating -->
-                <div class="flex justify justify-between">
-                    <div class="flex gap-2">
-                        <span class="text-black font-medium">Alice Banks</span>
+            {% if reviews %}
+                {% for review in reviews reversed %}
+                    <div class="flex flex-col gap-4 bg-gray-50 p-4 rounded-xl shadow-lg">
+                        <!-- Profile and Rating -->
+                        <div class="flex justify justify-between">
+                            <div class="flex gap-2">
+                                <span class="text-black font-medium">{{ review.user.username }}</span>
+                            </div>
+                            <div class="flex p-1 gap-1 text-orange-300">
+                                {% for i in "12345" %}
+                                    {% if forloop.counter <= review.rating %}
+                                        <p class="text-sm">⭐</p>
+                                    {% endif%}
+                                {% endfor %}                        
+                            </div>
+                        </div>
+                    
+                        <div class="text-black">
+                            {{ review.review }}
+                        </div>
+                    
+                        <div class="flex justify-between">
+                            <span class="text-gray-500 mt-2">{{ review.date }}</span>
+                            {% if review.user == user %}
+                                <a href="">
+                                    <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full inline-flex items-center">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="w-5 h-5 mr-2">
+                                            <path d="M2.695 14.763l-1.262 3.154a.5.5 0 00.65.65l3.155-1.262a4 4 0 001.343-.885L17.5 5.5a2.121 2.121 0 00-3-3L3.58 13.42a4 4 0 00-.885 1.343z" />
+                                        </svg>
+                                        Edit
+                                    </button>
+                                </a>
+                            {% endif %}
+                        </div>
                     </div>
-                    <div class="flex p-1 gap-1 text-orange-300">
-                        {% for i in "12345" %}
-                            {% if forloop.counter <= star %}
-                                <p class="text-sm">⭐</p>
-                            {% endif%}
-                        {% endfor %}                        
-                    </div>
-                </div>
+                {% endfor %}
+            {% else %}
+                <p class="text-gray-600 font-medium text-center">No reviews yet, be the first to write a review!</p>
+            {% endif %}
             
-                <div class="text-black">
-                    The device has a clean design and the metal housing feels sturdy in my hands. Soft rounded corners make it a pleasure to look at.
-                </div>
-            
-                <div class="flex justify-between">
-                    <span class="text-gray-500 mt-2">Feb 13, 2021</span>
-                    <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full inline-flex items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="w-5 h-5 mr-2">
-                            <path d="M2.695 14.763l-1.262 3.154a.5.5 0 00.65.65l3.155-1.262a4 4 0 001.343-.885L17.5 5.5a2.121 2.121 0 00-3-3L3.58 13.42a4 4 0 00-.885 1.343z" />
-                        </svg>
-                        Edit
-                    </button>
-                </div>
-            </div>
-
-            <div class="flex flex-col gap-4 bg-gray-700 p-4">
-                <!-- Profile and Rating -->
-                <div class="flex justify justify-between">
-                    <div class="flex gap-2">
-                        <div class="w-7 h-7 text-center rounded-full bg-yellow-500">A</div>
-                        <span>Alice Banks</span>
-                    </div>
-                    <div class="flex p-1 gap-1 text-orange-300">
-                        <ion-icon name="star"></ion-icon>
-                        <ion-icon name="star"></ion-icon>
-                        <ion-icon name="star"></ion-icon>
-                        <ion-icon name="star"></ion-icon>
-                        <ion-icon name="star"></ion-icon>
-                        
-                    </div>
-                </div>
-            
-                <div>
-                    The device has a clean design and the metal housing feels sturdy in my hands. Soft rounded corners make it a pleasure to look at.
-                </div>
-            
-                <div class="flex justify-between">
-                    <span>Feb 13, 2021</span>
-                    <button class="p-1 px-2 bg-gray-900 hover:bg-gray-950 border border-gray-950 bg-opacity-60">
-                                    <ion-icon name="share-outline"></ion-icon> Share</button>
-                </div>
-            </div>
-
-            <div class="flex flex-col gap-4 bg-gray-700 p-4">
-                <!-- Profile and Rating -->
-                <div class="flex justify justify-between">
-                    <div class="flex gap-2">
-                        <div class="w-7 h-7 text-center rounded-full bg-yellow-500">A</div>
-                        <span>Alice Banks</span>
-                    </div>
-                    <div class="flex p-1 gap-1 text-orange-300">
-                        <ion-icon name="star"></ion-icon>
-                        <ion-icon name="star"></ion-icon>
-                        <ion-icon name="star"></ion-icon>
-                        <ion-icon name="star"></ion-icon>
-                        <ion-icon name="star"></ion-icon>
-                        
-                    </div>
-                </div>
-            
-                <div>
-                    The device has a clean design and the metal housing feels sturdy in my hands. Soft rounded corners make it a pleasure to look at.
-                </div>
-            
-                <div class="flex justify-between">
-                    <span>Feb 13, 2021</span>
-                    <button class="p-1 px-2 bg-gray-900 hover:bg-gray-950 border border-gray-950 bg-opacity-60">
-                                    <ion-icon name="share-outline"></ion-icon> Share</button>
-                </div>
-            </div>
-
-            <div class="flex flex-col gap-4 bg-gray-700 p-4">
-                <!-- Profile and Rating -->
-                <div class="flex justify justify-between">
-                    <div class="flex gap-2">
-                        <div class="w-7 h-7 text-center rounded-full bg-yellow-500">A</div>
-                        <span>Alice Banks</span>
-                    </div>
-                    <div class="flex p-1 gap-1 text-orange-300">
-                        <ion-icon name="star"></ion-icon>
-                        <ion-icon name="star"></ion-icon>
-                        <ion-icon name="star"></ion-icon>
-                        <ion-icon name="star"></ion-icon>
-                        <ion-icon name="star"></ion-icon>
-                        
-                    </div>
-                </div>
-            
-                <div>
-                    The device has a clean design and the metal housing feels sturdy in my hands. Soft rounded corners make it a pleasure to look at.
-                </div>
-            
-                <div class="flex justify-between">
-                    <span>Feb 13, 2021</span>
-                    <button class="p-1 px-2 bg-gray-900 hover:bg-gray-950 border border-gray-950 bg-opacity-60">
-                                    <ion-icon name="share-outline"></ion-icon> Share</button>
-                </div>
-            </div>
-
-            <div class="flex flex-col gap-4 bg-gray-700 p-4">
-                <!-- Profile and Rating -->
-                <div class="flex justify justify-between">
-                    <div class="flex gap-2">
-                        <div class="w-7 h-7 text-center rounded-full bg-yellow-500">A</div>
-                        <span>Alice Banks</span>
-                    </div>
-                    <div class="flex p-1 gap-1 text-orange-300">
-                        <ion-icon name="star"></ion-icon>
-                        <ion-icon name="star"></ion-icon>
-                        <ion-icon name="star"></ion-icon>
-                        <ion-icon name="star"></ion-icon>
-                        <ion-icon name="star"></ion-icon>
-                        
-                    </div>
-                </div>
-            
-                <div>
-                    The device has a clean design and the metal housing feels sturdy in my hands. Soft rounded corners make it a pleasure to look at.
-                </div>
-            
-                <div class="flex justify-between">
-                    <span>Feb 13, 2021</span>
-                    <button class="p-1 px-2 bg-gray-900 hover:bg-gray-950 border border-gray-950 bg-opacity-60">
-                                    <ion-icon name="share-outline"></ion-icon> Share</button>
-                </div>
-            </div>
-
-            <div class="flex flex-col gap-4 bg-gray-700 p-4">
-                <!-- Profile and Rating -->
-                <div class="flex justify justify-between">
-                    <div class="flex gap-2">
-                        <div class="w-7 h-7 text-center rounded-full bg-yellow-500">A</div>
-                        <span>Alice Banks</span>
-                    </div>
-                    <div class="flex p-1 gap-1 text-orange-300">
-                        <ion-icon name="star"></ion-icon>
-                        <ion-icon name="star"></ion-icon>
-                        <ion-icon name="star"></ion-icon>
-                        <ion-icon name="star"></ion-icon>
-                        <ion-icon name="star"></ion-icon>
-                        
-                    </div>
-                </div>
-            
-                <div>
-                    The device has a clean design and the metal housing feels sturdy in my hands. Soft rounded corners make it a pleasure to look at.
-                </div>
-            
-                <div class="flex justify-between">
-                    <span>Feb 13, 2021</span>
-                    <button class="p-1 px-2 bg-gray-900 hover:bg-gray-950 border border-gray-950 bg-opacity-60">
-                                    <ion-icon name="share-outline"></ion-icon> Share</button>
-                </div>
-            </div>
         </div>
     </div>
 </div>

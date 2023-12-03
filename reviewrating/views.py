@@ -1,29 +1,51 @@
-from django.http import HttpResponse, HttpResponseNotFound, JsonResponse
+from django.http import JsonResponse, HttpResponseRedirect
 from django.shortcuts import redirect, render
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from reviewrating.models import Review
+from django.urls import reverse
 from post_properti.models import PostProperti
-from django.core import serializers
-from .forms import ReviewForm
+from reviewrating.models import Review
+from reviewrating.forms import ReviewForm
 
 # Create your views here.
-def show_reviews(request):
-    reviews = Review.objects.filter(post=1)
+def show_reviews(request, id):
+    reviews = Review.objects.filter(post=id)
+    post = PostProperti.objects.get(pk=id)
     total_reviews = reviews.count()
+
+    one_star_rating = reviews.filter(rating=1)
+    two_star_rating = reviews.filter(rating=2)
+    three_star_rating = reviews.filter(rating=3)
+    four_star_rating = reviews.filter(rating=4)
+    five_star_rating = reviews.filter(rating=5)
+
     context = {
+        "user": request.user,
+        "post": post,
         "reviews": reviews,
-        "test": "test",
         "total_reviews": total_reviews,
-        "angka": int(153/400 * 100),
-        "star": 5,
+
+        "one_star_percent": int(one_star_rating.count()/total_reviews * 100),
+        "two_star_percent": int(two_star_rating.count()/total_reviews * 100),
+        "three_star_percent": int(three_star_rating.count()/total_reviews * 100),
+        "four_star_percent": int(four_star_rating.count()/total_reviews * 100),
+        "five_star_percent": int(five_star_rating.count()/total_reviews * 100),
     }
     return render(request, "reviews.html", context)
     
 
 @login_required(login_url="authentication:login_user")
-def add_review(request, post_id):
-    if request.method == 'POST':
+def add_review(request, id):
+    form = ReviewForm(request.POST or None)
+
+    if form.is_valid() and request.method == "POST":
+        form.save()
+        return HttpResponseRedirect(reverse('review:show_reviews'))
+    
+    context = {'form': form}
+    return render(request, "add_review.html", context)
+
+    """ if request.method == 'POST':
         user = request.user
         rating = request.POST.get("rating")
         review = request.POST.get("review")
@@ -38,7 +60,7 @@ def add_review(request, post_id):
 
         review.save()
         return JsonResponse({'message': 'Review created successfully'}, status=200)
-    return HttpResponseNotFound()
+    return HttpResponseNotFound() """
 
 def delete_review(request, review_id):
     try:
