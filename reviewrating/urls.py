@@ -6,6 +6,5 @@ app_name = 'review'
 urlpatterns = [
     path("", show_reviews, name="show_reviews"),
     path("add/", add_review, name="add_review"),
-    path("delete/<int:id>", delete_review, name="delete_review"),
     path("edit/<int:id>", edit_review, name="edit_review"),
 ]

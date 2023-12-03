@@ -14,11 +14,8 @@ a[href*="intent"] {
     margin-top: 0.4em;
 }
 
-/*  
-    * Rating styles
-    */
 .rating {
-    width: 226px;
+    width: 190px;
     margin: 0 auto 1em;
     font-size: 45px;
     overflow:hidden;
@@ -38,6 +35,7 @@ position: absolute;
     -o-transition: color .4s;
     transition: color .4s;
 }
+.rating input:checked ~ label,
 .rating label:hover ~ label,
 .rating input:focus ~ label,
 .rating label:hover,
