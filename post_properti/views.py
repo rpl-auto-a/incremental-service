@@ -10,7 +10,6 @@ from userData.models import UserData
 from .forms import PostPropertiForm
 
 # Create your views here.
-from django.contrib.auth.models import User
 
 @login_required
 def add_post(request):

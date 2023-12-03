@@ -1,5 +1,11 @@
+{% extends "base.html" %}
 <!-- Placeholder sementara  -->
 
+{% block meta %}
+<title>{{ post.nama_properti }} | RentAcross</title>
+{% endblock meta %}
+
+{% block content %}
 <div>
     <div>
         <img src="{{ post.foto_properti }}"  alt="...">
@@ -10,9 +16,10 @@
     {% if nomor_wa %}
         <p>Nomor WhatsApp: {{ nomor_wa }}</p>
         <a href="https://wa.me/{{ nomor_wa }}" target="_blank">
-            <button>Chat on WhatsApp</button>
+            <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Chat on WhatsApp</button>
         </a>
     {% else %}
         <p>Nomor WhatsApp tidak tersedia</p>
     {% endif %}
 </div>
+{% endblock content %}

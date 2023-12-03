@@ -1,10 +1,22 @@
+{% extends "base.html" %}
 <!-- Placeholder sementara  -->
+
+{% block meta %}
+<title>All Posts | RentAcross</title>
+{% endblock meta %}
+
+{% block header %}
 <h2>All Posts</h2>
+{% endblock header %}
+
+{% block content %}
 <!-- Cards -->
 <div class="row" id="posts">
 
 </div>
+{% endblock content %}
 
+{% block script %}
 <script>
     async function getAllPosts() {
         return fetch("{% url 'all_posts_json' %}").then((res) => res.json())
@@ -33,3 +45,4 @@
     refreshPosts()
 
 </script>
+{% endblock script %}
