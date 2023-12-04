@@ -166,6 +166,6 @@ def filter_posts(request):
             else:
                 posts = PostProperti.objects.filter(negara_properti=negara)
 
-            return render(request, 'filtered_posts.html', {'posts': posts, 'form': form})
+            return render(request, 'filter_posts.html', {'posts': posts, 'form': form})
 
     return render(request, 'filter_posts.html', {'form': form})
