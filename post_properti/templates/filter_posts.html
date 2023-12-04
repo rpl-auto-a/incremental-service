@@ -1,18 +1,72 @@
-<form method="post">
-    {% csrf_token %}
+<!-- TODO -> PINDAHIN KE NAVBAR NANTI  -->
+{% extends 'base.html' %}
+
+{% block content %}
+  <h2>Filter Posts</h2>
+
+  <form method="get" action="{% url 'filter_posts' %}" id="filter_form">
     {{ form.as_p }}
-    <button type="submit">Filter</button>
-</form>
+    <input type="submit" value="Filter">
+  </form>
 
-{% if form.non_field_errors %}
-    <p style="color: red">{{ form.non_field_errors }}</p>
-{% endif %}
-
-{% if posts %}
-    <h2>Hasil Filter:</h2>
+  {% if posts %}
+    <h3>Filtered Posts:</h3>
     <ul>
-        {% for post in posts %}
-            <li>{{ post }}</li>
-        {% endfor %}
+      {% for post in posts %}
+        <li>{{ post.nama_properti }}</li>
+      {% endfor %}
     </ul>
-{% endif %}
+  {% else %}
+    <p>Pilihlah Negara dan Kota yang valid!</p>
+  {% endif %}
+
+  <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+  <script>
+    // Ensure jQuery is included
+
+    // Function to update Kota choices based on selected Negara
+    function updateKotaChoices() {
+      var negara = $('#id_negara').val();
+      $.ajax({
+        url: `{% url 'get_kota_choices' %}`,
+        data: {'negara': negara},
+        dataType: 'json',
+        success: function(data) {
+          var kotaSelect = $('#id_kota');
+          kotaSelect.empty();
+          $.each(data.choices, function(key, value) {
+            kotaSelect.append($('<option></option>').attr('value', value).text(value));
+          });
+
+          // Add hidden input fields with current values of negara and kota
+          $('#filterForm').append('<input type="hidden" name="negara" value="' + negara + '">');
+          $('#filterForm').append('<input type="hidden" name="kota" value="' + $('#id_kota').val() + '">');
+        }
+      });
+    }
+
+    // Attach the update function to the change event of Negara dropdown
+    $('#id_negara').change(function() {
+      updateKotaChoices();
+    });
+
+    // Initialize Kota choices on page load
+    $(document).ready(function() {
+      updateKotaChoices();
+    });
+
+    async function filterPosts() {
+        const negara = $('#id_negara').val();
+        const kota = $('#id_kota').val();
+
+        const response = await fetch(`{% url 'filter_posts' %}?negara=${negara}&kota=${kota}`);
+        const result = await response.text();
+    }
+
+    // Attach the function to the form submission event
+    document.getElementById('filter_form').addEventListener('submit', function(event) {
+        event.preventDefault();  // Prevent the default form submission
+        filterPosts();  // Call the filterPosts function
+    });
+  </script>
+{% endblock %}

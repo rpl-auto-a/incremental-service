@@ -14,4 +14,5 @@ urlpatterns = [
     path('user_posts/', show_user_posts, name='show_user_posts'),
     path('user_posts_json/', user_posts_json, name='user_posts_json'),
     path('filter_posts/', filter_posts, name='filter_posts'),
+    path('get_kota_choices/', get_kota_choices, name='get_kota_choices'),
 ]
