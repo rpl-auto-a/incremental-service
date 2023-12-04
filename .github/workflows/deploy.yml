@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - master
 
 jobs:
   Deployment:
@@ -23,6 +22,7 @@ jobs:
           username: ${{ secrets.GCP_VM_USERNAME }}
           key: ${{ secrets.GCP_PRIVATE_KEY }}
           script: |
+                cd /home/iqbaldwtm
                 cd incremental-service
                 git pull origin main
                 source env/bin/activate
