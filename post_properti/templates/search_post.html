@@ -1,24 +1,64 @@
-<!-- search_post.html -->
-{% extends 'base.html' %}
+{% extends "base.html" %}
+<!-- Placeholder sementara  -->
+
+{% block meta %}
+<title>Search Posts | RentAcross</title>
+{% endblock meta %}
 
 {% block content %}
-  <div class="container mx-auto my-8">
-    <h1 class="text-3xl font-bold mb-4">Search Posts</h1>
-    
-    {% if posts %}
-      <h2 class="text-xl font-semibold mt-8">Search Results for "{{ searched_post }}"</h2>
-      <ul class="mt-4">
-        {% for post in posts %}
-          <li class="mb-4">
-            <a href="{% url 'show_post_detail' post.id %}" class="text-blue-500 hover:underline">
-              {{ post.nama_properti }}
-            </a>
-          </li>
-        {% endfor %}
-      </ul>
-    {% else %}
-      <p class="mt-8">No properties found for "{{ searched_post }}".</p>
-      
-    {% endif %}
-  </div>
-{% endblock %}
+<h2 class="text-center text-3xl block font-bold text-gray-700 py-8">Search Posts</h2>
+
+<!-- Cards -->
+<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 pb-8" id="search_results">
+  {% if posts %}
+    {% for post in posts %}
+    <div class="search-result">
+      <a href='/posts/{{post.pk}}/'>
+        <div class="max-w-xs rounded overflow-hidden shadow-lg">
+              <img class="w-full h-48 object-scale-down" src="{{post.foto_properti}}" alt="Foto properti">
+              <div class="px-6 py-4">
+              <div class="font-bold line-clamp-2 text-xl mb-2">{{ post.nama_properti }}</div>
+              <p class="text-gray-700 line-clamp-2 text-base h-12">{{ post.deskripsi_properti }}</p>
+              </div>
+              <div class="px-6 pt-2 pb-2">
+              <span class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">{{post.kota_properti}}, {{post.negara_properti}}</span>
+              </div>
+              {% if user.is_authenticated %}
+                {% if user.pk == post.user.pk %}
+                  <div class="px-6 py-4">
+                    <a href='/posts/edit_post/{{post.pk}}/'>
+                      <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded">
+                      Edit
+                      </button>
+                    </a>
+                  </div>
+                {% endif %}
+              {% endif %}
+          </div>
+        </a>
+    </div>
+    {% endfor %}  
+  {% else %}
+    <h5 class="text-center text-2xl block text-gray-700 py-8">No properties found for "{{ searched_post }}".</h5>
+  {% endif %}
+</div>
+{% endblock content %}
+
+{% block script %}
+<script>
+    async function searchPosts() {
+      const searchedPost = document.getElementById('searched_post').value;
+      const formData = new FormData();
+      formData.append('searched_post', searchedPost);
+
+      const response = await fetch("{% url 'search_post' %}", {
+        method: 'POST',
+        body: formData
+    });
+
+      const result = await response.text();
+      document.getElementById('search_results').innerHTML = result;
+    }
+    searchPosts()
+</script>
+{% endblock script %}

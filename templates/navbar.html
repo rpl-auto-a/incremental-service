@@ -27,6 +27,11 @@
                 <a class="nav-btn relative after:content-[''] after:bg-[#005b9c] after:h-[2px] after:w-[0%] after:left-0 after:-bottom-[5px] after:rounded-xl after:absolute after:duration-300" href="/">Home</a>
                 <a class="nav-btn relative after:content-[''] after:bg-[#005b9c] after:h-[2px] after:w-[0%] after:left-0 after:-bottom-[5px] after:rounded-xl after:absolute after:duration-300" href="{% url 'show_all_posts' %}">Posts</a>
                 {% if user.is_authenticated %}
+                <div class="py-4 overflow-y-auto">
+                    <ul class="space-y-2 font-medium">
+                        <li><a href="{% url 'show_user_posts' %}" class="flex items-center p-1">My Posts</a></li>
+                    </ul>
+                </div>
                 <a class="nav-btn relative bg-[#003f7e] rounded-xl px-3 py-1 text-white" href="{% url 'new_post' %}">Create Post</a>
                 {% endif %}
             </div>

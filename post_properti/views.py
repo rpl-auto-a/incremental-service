@@ -122,6 +122,12 @@ def show_user_posts(request):
     }
     return render(request, 'show_user_posts.html', context)
 
+@login_required
+def user_posts_json(request):
+    user_logged_in = request.user
+    posts = PostProperti.objects.filter(user=user_logged_in)
+    return HttpResponse(serializers.serialize('json', posts))
+
 # Method untuk mencari post berdasarkan nama properti
 def search_post_by_name(request):
     if request.method == 'POST':
