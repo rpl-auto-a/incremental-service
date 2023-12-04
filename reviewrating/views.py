@@ -25,6 +25,12 @@ def show_reviews(request, id):
         "reviews": reviews,
         "total_reviews": total_reviews,
 
+        "one_star_count": one_star_rating.count(),
+        "two_star_count": two_star_rating.count(),
+        "three_star_count": three_star_rating.count(),
+        "four_star_count": four_star_rating.count(),
+        "five_star_count": five_star_rating.count(),
+
         "one_star_percent": int((total_reviews and one_star_rating.count()/total_reviews or 0) * 100),
         "two_star_percent": int((total_reviews and two_star_rating.count()/total_reviews or 0) * 100),
         "three_star_percent": int((total_reviews and three_star_rating.count()/total_reviews or 0) * 100),
@@ -45,6 +51,8 @@ def add_review(request, id):
         review.save()
         messages.success(request, 'Your review has been successfully added!')
         return HttpResponseRedirect(reverse('review:show_reviews', kwargs={"id": id}))
+    else:
+        messages.error(request, 'Please complete all input fields to continue.')
 
     context = {'form': form}
     return render(request, "add_review.html", context)
