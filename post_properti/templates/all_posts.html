@@ -33,13 +33,13 @@
                 const postDetailUrl = `/posts/${post.pk}/`;
                 htmlString += `
                 <a href=${postDetailUrl}>
-                    <div class="max-w-xs rounded overflow-hidden shadow-lg">
+                    <div class="max-w-xs relative rounded overflow-hidden shadow-lg h-96">
                         <img class="w-full h-48 object-scale-down" src="${post.fields.foto_properti}" alt="Foto properti">
                         <div class="px-6 py-4">
-                        <div class="font-bold line-clamp-2 text-xl mb-2">${post.fields.nama_properti}</div>
-                        <p class="text-gray-700 line-clamp-2 text-base h-12">${post.fields.deskripsi_properti}</p>
+                            <div class="font-bold line-clamp-2 text-xl mb-2">${post.fields.nama_properti}</div>
+                            <p class="text-gray-700 line-clamp-2 text-base">${post.fields.deskripsi_properti}</p>
                         </div>
-                        <div class="px-6 pt-2 pb-2">
+                        <div class="px-6 pt-2 pb-2 absolute bottom-0 line-clamp-1">
                         <span class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">${post.fields.kota_properti}, ${post.fields.negara_properti}</span>
                         </div>
                         
