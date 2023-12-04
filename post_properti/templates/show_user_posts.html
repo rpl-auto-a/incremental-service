@@ -1,19 +1,41 @@
-<!-- show_user_posts.html -->
-<!-- {% extends 'base.html' %} -->
+{% extends "base.html" %}
+
+{% block meta %}
+<title>User Posts | RentAcross</title>
+{% endblock meta %}
 
 {% block content %}
-  <h2>Your Posts</h2>
+<h2 class="text-center text-3xl block font-bold text-gray-700 py-8">User Posts</h2>
+
+<!-- Cards -->
+<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 pb-8" id="posts">
   {% if list_properti %}
-    <ul>
-      {% for post in list_properti %}
-        <li>
-          <p>{{ post.nama_properti }}</p>
-          <p>{{ post.deskripsi_properti }}</p>
-          <a href="{% url 'edit_post' post.id %}">Edit</a>
-        </li>
-      {% endfor %}
-    </ul>
+    {% for post in list_properti %}
+    <div class="search-result">
+      <a href='/posts/{{post.pk}}/'>
+        <div class="max-w-xs rounded overflow-hidden shadow-lg">
+              <img class="w-full h-48 object-scale-down" src="{{post.foto_properti}}" alt="Foto properti">
+              <div class="px-6 py-4">
+              <div class="font-bold line-clamp-2 text-xl mb-2">{{ post.nama_properti }}</div>
+              <p class="text-gray-700 line-clamp-2 text-base h-12">{{ post.deskripsi_properti }}</p>
+              </div>
+              <div class="px-6 pt-2 pb-2">
+              <span class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">{{post.kota_properti}}, {{post.negara_properti}}</span>
+              </div>
+                  <div class="px-6 py-4">
+                    <a href='/posts/edit_post/{{post.pk}}/'>
+                      <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded">
+                      Edit
+                      </button>
+                    </a>
+                  </div>
+          </div>
+        </a>
+    </div>
+    {% endfor %}  
   {% else %}
-    <p>You haven't created any posts yet.</p>
+    <h5 class="text-center text-2xl block text-gray-700 py-8">You haven't made any post yet.</h5>
   {% endif %}
-{% endblock %}
+</div>
+{% endblock content %}
+

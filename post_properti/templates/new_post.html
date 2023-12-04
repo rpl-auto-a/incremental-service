@@ -6,7 +6,7 @@
 
 {% block content %}
 <div class="max-w-xl mx-auto mt-10 space-y-4">
-    <h2 class="block font-bold text-xl text-gray-700 text-center">New Post</h2>
+    <h2 class="block font-bold text-2xl text-gray-700 text-center">New Post</h2>
     <form class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4" method="post" action="{% url 'new_post' %}">
         {% csrf_token %}
         <div class="mb-4 w-full">

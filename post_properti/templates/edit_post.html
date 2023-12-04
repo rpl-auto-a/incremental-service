@@ -1,14 +1,102 @@
-<!-- Placeholder sementara edit_post.html -->
-<h2>Edit Post</h2>
-<form method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Save Changes</button>
-    <button type="button" onclick="cancelUpdate()">Cancel</button>
-</form>
+<!-- edit_post.html -->
+{% extends 'base.html' %}
 
+{% block meta %}
+<title>Edit Post | RentAcross</title>
+{% endblock meta %}
+
+{% block content %}
+<div class="max-w-xl mx-auto mt-10 space-y-4">
+    <h2 class="block font-bold text-xl text-gray-700 text-center">Edit Post</h2>
+    <form class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        
+        {% for field in form %}
+            <div class="mb-4 w-full">
+                <label class="block text-gray-700 font-bold mb-2" for="{{ field.id_for_label }}">
+                    {{ field.label }}
+                </label>
+                {% if field.name == 'kota_properti' %}
+                    <select id="kota" name="kota_properti" class="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
+                        <!-- Options fetched asynchronously using JavaScript -->
+                    </select>
+                {% elif field.name == 'negara_properti' %}
+                    <select id="negara" name="negara_properti" onchange="fetchCities(this.value)" class="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
+                        <!-- Options fetched asynchronously using JavaScript -->
+                    </select>
+                {% else %}
+                    {{ field }}
+                {% endif %}
+            </div>
+        {% endfor %}
+
+        <!-- Action Buttons -->
+        <div class="flex items-center justify-end space-x-2">
+            <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 border border-blue-700 rounded">Save Changes</button>
+        </div>
+    </form>
+    <div class="flex items-center justify-end space-x-2 mt-4">
+        <button class="bg-white hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded" onClick="goBack()">Cancel</button>    
+    </div>
+</div>
+{% endblock content %}
+
+
+{% block script %}
 <script>
-    function cancelUpdate() {
-      window.location.href = "{% url 'show_user_posts' %}";
+    function goBack() {
+        window.location.href = "{% url 'show_user_posts' %}";
     }
-    </script>
+
+    async function getCountries() {
+        return fetch("https://countriesnow.space/api/v0.1/countries/iso").then(response => response.json()).then(a => a.data)
+    }
+    
+    async function setCountriesOptions() {
+        countryDropdown = document.getElementById("negara")
+        countryDropdown.innerHTML = '<option value="" disabled selected>Select Country</option>';
+
+        const countries = await getCountries()
+        let htmlString = ``
+
+        if (countries.length==0) {
+            htmlString+=`<span>*No countries yet</span>`
+        } else {
+            countries.forEach(country => {
+                const option = document.createElement('option');
+                option.value = country.name;
+                option.text = country.name;
+                countryDropdown.appendChild(option);
+            });
+        }
+    }
+    setCountriesOptions()
+
+    function fetchCities(countryName) {
+        const cityDropdown = document.getElementById('kota');
+
+        
+        cityDropdown.innerHTML = '<option value="" disabled selected>Select City</option>';
+        
+        fetch('https://countriesnow.space/api/v0.1/countries/cities', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ country: countryName }),
+        })
+        .then(response => response.json()).then(res => res.data)
+        .then(cities => {
+            cities.forEach(city => {
+                const option = document.createElement('option');
+                option.value = city;
+                option.text = city;
+                cityDropdown.appendChild(option);
+            });
+        })
+        .catch(error => console.error('Error fetching city data:', error));
+        cityDropdown.disabled = false;
+    }
+
+</script>
+{% endblock script %}
