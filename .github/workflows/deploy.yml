@@ -24,7 +24,7 @@ jobs:
           key: ${{ secrets.GCP_PRIVATE_KEY }}
           script: |
                 cd incremental-service
+                git pull origin main
                 source env/bin/activate
                 pip3 install -r requirements.txt
                 python3 manage.py migrate
-                git pull origin main
