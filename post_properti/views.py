@@ -12,7 +12,7 @@ from .forms import PostPropertiForm, FilterForm
 
 # Create your views here.
 
-@login_required
+# @login_required
 def add_post(request):
     if request.method == 'POST':
         user = request.user
@@ -144,28 +144,30 @@ def search_post_by_name(request):
         return render(request, 'search_post.html')
 
 # Method untuk memfilter post berdasarkan negara dan kota
-# @login_required
 def filter_posts(request):
     form = FilterForm()
 
     negara_choices = PostProperti.objects.values_list('negara_properti', flat=True).distinct()
     form.fields['negara'].choices = [(negara, negara) for negara in negara_choices]
 
-    if request.method == 'POST':
-        form = FilterForm(request.POST)
+    negara = request.GET.get('negara', '')
+    kota = request.GET.get('kota', '')
 
-        if form.is_valid():
-            negara = form.cleaned_data['negara']
-            kota_choices = PostProperti.objects.filter(negara_properti=negara).values_list('kota_properti', flat=True).distinct()
-            form.set_kota_choices([(kota, kota) for kota in kota_choices])
+    kota_choices = PostProperti.objects.filter(negara_properti=negara).values_list('kota_properti', flat=True).distinct()
 
-            kota = form.cleaned_data['kota'] if 'kota' in form.cleaned_data else None
+    if kota_choices:
+        form.fields['kota'].choices = [(kota, kota) for kota in kota_choices]
+    else:
+        form.fields['kota'].choices = []
 
-            if kota:
-                posts = PostProperti.objects.filter(negara_properti=negara, kota_properti=kota)
-            else:
-                posts = PostProperti.objects.filter(negara_properti=negara)
+    if kota:
+        posts = PostProperti.objects.filter(negara_properti=negara, kota_properti=kota)
+    else:
+        posts = PostProperti.objects.filter(negara_properti=negara)
 
-            return render(request, 'filter_posts.html', {'posts': posts, 'form': form})
+    return render(request, 'filter_posts.html', {'posts': posts, 'form': form})
 
-    return render(request, 'filter_posts.html', {'form': form})
+def get_kota_choices(request):
+    negara = request.GET.get('negara', '')
+    kota_choices = list(PostProperti.objects.filter(negara_properti=negara).values_list('kota_properti', flat=True).distinct())
+    return JsonResponse({'choices': kota_choices})
