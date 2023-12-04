@@ -25,11 +25,11 @@ def show_reviews(request, id):
         "reviews": reviews,
         "total_reviews": total_reviews,
 
-        "one_star_percent": int(one_star_rating.count()/total_reviews * 100),
-        "two_star_percent": int(two_star_rating.count()/total_reviews * 100),
-        "three_star_percent": int(three_star_rating.count()/total_reviews * 100),
-        "four_star_percent": int(four_star_rating.count()/total_reviews * 100),
-        "five_star_percent": int(five_star_rating.count()/total_reviews * 100),
+        "one_star_percent": int((total_reviews and one_star_rating.count()/total_reviews or 0) * 100),
+        "two_star_percent": int((total_reviews and two_star_rating.count()/total_reviews or 0) * 100),
+        "three_star_percent": int((total_reviews and three_star_rating.count()/total_reviews or 0) * 100),
+        "four_star_percent": int((total_reviews and four_star_rating.count()/total_reviews or 0) * 100),
+        "five_star_percent": int((total_reviews and five_star_rating.count()/total_reviews or 0) * 100),
     }
     return render(request, "reviews.html", context)
     
