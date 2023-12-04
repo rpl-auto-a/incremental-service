@@ -7,11 +7,16 @@
 
 {% block content %}
 <div class="flex justify-center items-center min-h-screen py-10">
+    
     <div class="md:w-3/5 w-3/4 px-10 flex flex-col gap-2 p-5 bg-white text-white rounded-2xl shadow-lg">
         <h1 class="py-5 text-2xl text-black font-bold">Reviews</h1>
         
         {% include 'user_reviews.html' %}
-        
+        {% if messages %}
+            {% for message in messages %}
+                <p class="text-black">{{message}}</p>
+            {% endfor %}
+        {% endif %}
         <!-- Item Container -->
         <div class="flex flex-col gap-3 mt-5">
             {% if reviews %}
