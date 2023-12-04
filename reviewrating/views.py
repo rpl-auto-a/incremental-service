@@ -43,8 +43,9 @@ def add_review(request, id):
         review.user = request.user
         review.post = PostProperti.objects.get(pk=id)
         review.save()
+        messages.success(request, 'Your review has been successfully added!')
         return HttpResponseRedirect(reverse('review:show_reviews', kwargs={"id": id}))
-    
+
     context = {'form': form}
     return render(request, "add_review.html", context)
 
