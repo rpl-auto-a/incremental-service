@@ -1,13 +1,23 @@
+{% extends "base.html" %}
 <!-- Placeholder sementara  -->
-<h2>All Posts</h2>
+
+{% block meta %}
+<title>All Posts | RentAcross</title>
+{% endblock meta %}
+
+{% block content %}
+<h2 class="text-center text-3xl block font-bold text-gray-700 py-8">All Posts</h2>
+
 <!-- Cards -->
-<div class="row" id="posts">
+<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 pb-8" id="posts">
 
 </div>
+{% endblock content %}
 
+{% block script %}
 <script>
     async function getAllPosts() {
-        return fetch("/json").then((res) => res.json())
+        return fetch("{% url 'all_posts_json' %}").then((res) => res.json())
     }
 
     async function refreshPosts() {
@@ -20,10 +30,22 @@
             htmlString+=`<span>*No Posts Yet</span>`
         } else {
             posts.forEach((post) => {
-                htmlString += `\n<a href='/post/${post.pk}'>
-                                    <div>${post.fields.nama_properti}
-                                    </div>
-                                </a>`
+                const postDetailUrl = `/posts/${post.pk}/`;
+                htmlString += `
+                <a href=${postDetailUrl}>
+                    <div class="max-w-xs relative rounded overflow-hidden shadow-lg h-96">
+                        <img class="w-full h-48 object-scale-down" src="${post.fields.foto_properti}" alt="Foto properti">
+                        <div class="px-6 py-4">
+                            <div class="font-bold line-clamp-2 text-xl mb-2">${post.fields.nama_properti}</div>
+                            <p class="text-gray-700 line-clamp-2 text-base">${post.fields.deskripsi_properti}</p>
+                        </div>
+                        <div class="px-6 pt-2 pb-2 absolute bottom-0 line-clamp-1">
+                        <span class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">${post.fields.kota_properti}, ${post.fields.negara_properti}</span>
+                        </div>
+                        
+                    </div>
+                </a>
+                `
             })
         }
         document.getElementById("posts").innerHTML = htmlString
@@ -31,3 +53,4 @@
     refreshPosts()
 
 </script>
+{% endblock script %}

@@ -1,18 +1,64 @@
+{% extends "base.html" %}
 <!-- Placeholder sementara  -->
 
-<div>
-    <div>
-        <img src="{{ post.foto_properti }}"  alt="...">
+{% block meta %}
+<title>{{ post.nama_properti }} | RentAcross</title>
+{% endblock meta %}
+
+{% block content %}
+<div class="lg:grid lg:grid-rows-1 lg:grid-cols-7 lg:gap-x-8 lg:gap-y-10 xl:gap-x-16 mt-14">
+    <div class="lg:row-end-1 lg:col-span-4 px-4">
+        <nav aria-label="Breadcrumb" class="pl-4 pb-6">
+            <ol role="list" class="flex items-center max-w-2xl space-x-2">
+              <li>
+                <div class="flex items-center">
+                  <a class="mr-2 text-md font-medium text-gray-900" href="/">Home</a>
+                  <svg width="16" height="20" viewBox="0 0 16 20" fill="currentColor" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" class="w-4 h-5 text-gray-300">
+                    <path d="M5.697 4.34L8.98 16.532h1.327L7.025 4.341H5.697z"></path>
+                  </svg>
+                </div>
+              </li>
+
+              <li>
+                <div class="flex items-center">
+                  <a class="mr-2 text-md font-medium text-gray-900" href="{% url 'show_all_posts' %}">Posts</a>
+                  <svg width="16" height="20" viewBox="0 0 16 20" fill="currentColor" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" class="w-4 h-5 text-gray-300">
+                    <path d="M5.697 4.34L8.98 16.532h1.327L7.025 4.341H5.697z"></path>
+                  </svg>
+                </div>
+              </li>
+
+              <li class="text-md">
+                <span class="font-medium text-gray-500">{{ post.nama_properti }}</span>
+              </li>
+            </ol>
+          </nav>
+        <div class="w-full">
+            <img src="{{ post.foto_properti }}" style="border-radius: 3%;" class="max-h-[80vh] object-scale-down mx-auto" alt="...">
+        </div>
     </div>
-    <h2>{{ post.nama_properti }}</h2>
-    <p>{{ post.deskripsi_properti }}</p>
-    <p>{{ post.kota_properti }}</p>
-    {% if nomor_wa %}
-        <p>Nomor WhatsApp: {{ nomor_wa }}</p>
-        <a href="https://wa.me/{{ nomor_wa }}" target="_blank">
-            <button>Chat on WhatsApp</button>
-        </a>
-    {% else %}
-        <p>Nomor WhatsApp tidak tersedia</p>
-    {% endif %}
+    <div class="w-full max-w-2xl mx-auto mt-14 sm:mt-16 lg:max-w-none lg:mt-0 lg:row-span-2 lg:col-span-3 lg:pr-8">
+        <div class="font-bold text-2xl pt-8 pb-4">{{ post.nama_properti }}</div>
+        <div class="text-md mb-6">
+            {{ post.kota_properti }}, {{post.negara_properti}} {{post.kode_pos_properti}}
+        </div>
+        <div class="text-md">
+            <span class="text-gray-600">Posted by </span>Jokowi
+        </div>
+        <div class="mt-4">
+            {% if nomor_wa %}
+                <a href="https://wa.me/{{ nomor_wa }}" target="_blank">
+                    <button class="mr-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Chat on WhatsApp</button>
+                </a>
+            {% else %}
+                <button class="mr-2 disabled bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Chat on WhatsApp</button>
+            {% endif %}
+        
+            <a href="{% url 'review:show_reviews' post.pk %}" >
+                <button class="mr-2 bg-blue-100 hover:bg-blue-200 text-blue-700 font-bold py-2 px-4 rounded">See Reviews</button>
+            </a>
+        </div>
+        <div class="pt-6">{{ post.deskripsi_properti }}</div>
+    </div>
 </div>
+{% endblock content %}

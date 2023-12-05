@@ -1,16 +1,18 @@
-from django.http import HttpResponse, HttpResponseNotFound, JsonResponse
+from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseNotFound, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from post_properti.models import PostProperti
+from userData.models import UserData
 from django.core import serializers
 from django.urls import reverse
-from .forms import PostPropertiForm
+
+from userData.models import UserData
+from .forms import PostPropertiForm, FilterForm
 
 # Create your views here.
-from django.contrib.auth.models import User
 
-@login_required
+# @login_required
 def add_post(request):
     if request.method == 'POST':
         user = request.user
@@ -20,7 +22,6 @@ def add_post(request):
         kota_properti = request.POST.get("kota")
         negara_properti = request.POST.get("negara")
         kode_pos_properti = request.POST.get("kodepos")
-        user_data = request.user.user_data
 
         post = PostProperti(
             user = user,
@@ -30,22 +31,57 @@ def add_post(request):
             kota_properti = kota_properti,
             negara_properti = negara_properti,
             kode_pos_properti = kode_pos_properti,
-            user_data = user_data,
         )
 
         post.save()
         return HttpResponse(b"CREATED", status=201)
     return HttpResponseNotFound()
 
+def new_post(request):
+    if request.method == "POST":
+        user = request.user
+        nama = request.POST.get('nama', '')
+        deskripsi = request.POST.get('deskripsi', '')
+        foto = request.POST.get('foto', '')
+        kota = request.POST.get('kota', '')
+        negara = request.POST.get('negara', '')
+        kodepos = request.POST.get('kodepos', '')
+
+        if not (nama and deskripsi and foto and kota and negara and kodepos):
+            return HttpResponseBadRequest("Missing required fields")
+
+        form_data = {
+            'user': user,
+            'nama_properti': nama,
+            'deskripsi_properti': deskripsi,
+            'foto_properti': foto,
+            'kota_properti': kota,
+            'negara_properti': negara,
+            'kode_pos_properti': kodepos,
+        }
+
+        form = PostPropertiForm(form_data)
+
+        if form.is_valid():
+            post_properti_instance = form.save(commit=False)
+            post_properti_instance.user = request.user
+            post_properti_instance.save()
+            return redirect(reverse('show_user_posts'))
+        else:
+            return render(request, "new_post.html", {'form': form})
+
+    return render(request, "new_post.html")
+
 def show_all_posts(request):
     return render(request, 'all_posts.html')
 
 def show_post_detail(request, id):
     post = PostProperti.objects.get(pk=id)
-    nomor_wa = post.user_data.nomorWA
+    user_data = UserData.objects.get(user=post.user)
+
     context = {
         'post': post,
-        'nomor_wa' : nomor_wa
+        'nomor_wa' : user_data.nomorWA
     }
 
     return render(request, 'post_detail.html', context)
@@ -56,8 +92,8 @@ def all_posts_json(request):
 
 # Method edit post properti
 @login_required
-def edit_post(request, post_id):
-    post = PostProperti.objects.get(pk=post_id)
+def edit_post(request, id):
+    post = PostProperti.objects.get(pk=id)
 
     if request.method == 'POST':
         edit_form = PostPropertiForm(request.POST, request.FILES, instance=post)
@@ -65,7 +101,7 @@ def edit_post(request, post_id):
             try:
                 edit_form.save()
                 messages.success(request, 'Post updated successfully.')
-                return redirect(reverse('show_post_detail', args=[post.id]))
+                return redirect('show_user_posts')
             except Exception as e:
                 messages.error(request, f'Error updating post: {e}')
         else:
@@ -86,6 +122,12 @@ def show_user_posts(request):
     }
     return render(request, 'show_user_posts.html', context)
 
+@login_required
+def user_posts_json(request):
+    user_logged_in = request.user
+    posts = PostProperti.objects.filter(user=user_logged_in)
+    return HttpResponse(serializers.serialize('json', posts))
+
 # Method untuk mencari post berdasarkan nama properti
 def search_post_by_name(request):
     if request.method == 'POST':
@@ -101,3 +143,31 @@ def search_post_by_name(request):
     else:
         return render(request, 'search_post.html')
 
+# Method untuk memfilter post berdasarkan negara dan kota
+def filter_posts(request):
+    form = FilterForm()
+
+    negara_choices = PostProperti.objects.values_list('negara_properti', flat=True).distinct()
+    form.fields['negara'].choices = [(negara, negara) for negara in negara_choices]
+
+    negara = request.GET.get('negara', '')
+    kota = request.GET.get('kota', '')
+
+    kota_choices = PostProperti.objects.filter(negara_properti=negara).values_list('kota_properti', flat=True).distinct()
+
+    if kota_choices:
+        form.fields['kota'].choices = [(kota, kota) for kota in kota_choices]
+    else:
+        form.fields['kota'].choices = []
+
+    if kota:
+        posts = PostProperti.objects.filter(negara_properti=negara, kota_properti=kota)
+    else:
+        posts = PostProperti.objects.filter(negara_properti=negara)
+
+    return render(request, 'filter_posts.html', {'posts': posts, 'form': form})
+
+def get_kota_choices(request):
+    negara = request.GET.get('negara', '')
+    kota_choices = list(PostProperti.objects.filter(negara_properti=negara).values_list('kota_properti', flat=True).distinct())
+    return JsonResponse({'choices': kota_choices})
