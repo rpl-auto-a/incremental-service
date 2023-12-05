@@ -31,7 +31,9 @@
     </head>
     
     <!-- Navigation -->
-    {% include 'navbar.html' %}
+    {% if request.path != '/auth/register/' and request.path != '/auth/login/' %}
+        {% include 'navbar.html' %}
+    {% endif %}
     <!-- end of navigation -->  
 
     {% block header %}

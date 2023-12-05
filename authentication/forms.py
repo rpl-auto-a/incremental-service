@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 class RegisterForm(UserCreationForm):
     name = forms.CharField(required=True)
     nomorWA = forms.RegexField(regex=r'^\+?1?\d{9,15}$', 
-                               error_messages = {"invalid": "Phone number must be entered in the format: '+999999999'."})
+                               error_messages = {"invalid": "Phone number must be entered in the format: '+628123456789'."})
 
     class Meta:
         model = User

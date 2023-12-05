@@ -81,6 +81,7 @@ def show_post_detail(request, id):
 
     context = {
         'post': post,
+        'nama': user_data.name,
         'nomor_wa' : user_data.nomorWA
     }
 
