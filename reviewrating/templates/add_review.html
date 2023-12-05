@@ -12,8 +12,8 @@
             <h1 class="py-5 text-2xl text-black font-bold">Add Your Review!</h1>
             <form id="add-form" method="POST">
                 {% csrf_token %}
-                <div class="text-center">
-                    <div class="rating">
+                <div class="flex justify-center">
+                    <div class="rating lg:text-5xl text-4xl">
                         <input name="rating" id="r5" type="radio" value="5"/><label for="r5">★</label>
                         <input name="rating" id="r4" type="radio" value="4"/><label for="r4">★</label>
                         <input name="rating" id="r3" type="radio" value="3"/><label for="r3">★</label>
