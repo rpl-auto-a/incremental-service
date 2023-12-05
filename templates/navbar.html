@@ -29,6 +29,11 @@
                 {% if user.is_authenticated %}
                 <div class="py-4 overflow-y-auto">
                     <ul class="space-y-2 font-medium">
+                        <li><a href="{% url 'userData:favorite' %}" class="flex items-center p-1">Favorite Posts</a></li>
+                    </ul>
+                </div>
+                <div class="py-4 overflow-y-auto">
+                    <ul class="space-y-2 font-medium">
                         <li><a href="{% url 'show_user_posts' %}" class="flex items-center p-1">My Posts</a></li>
                     </ul>
                 </div>
