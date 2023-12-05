@@ -3,26 +3,77 @@
 {% block title %}Favorite Posts{% endblock title %}
 
 {% block content %}
-    <div class="py-8 px-16 bg-gray-900 text-white min-h-screen">
-        <h1 class="text-4xl font-bold mb-16 text-blue-500">Favorite Page</h1>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-4 gap-y-8">
-            <div class="relative flex w-80 flex-col rounded-xl bg-white bg-clip-border text-gray-700 shadow-md">
-                <div class="relative mx-4 -mt-6 h-40 overflow-hidden rounded-xl bg-blue-gray-500 bg-clip-border text-white shadow-lg shadow-blue-gray-500/40 bg-gradient-to-r from-blue-500 to-blue-600">
-                </div>
-                <div class="p-6">
-                  <h5 class="mb-2 block font-sans text-xl font-semibold leading-snug tracking-normal text-blue-gray-900 antialiased">
-                   Tailwind card
-                  </h5>
-                  <p class="block font-sans text-base font-light leading-relaxed text-inherit antialiased">
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc felis ligula. 
-                  </p>
-                </div>
-                <div class="p-6 pt-0">
-                  <button data-ripple-light="true" type="button" class="select-none rounded-lg bg-blue-500 py-3 px-6 text-center align-middle font-sans text-xs font-bold uppercase text-white shadow-md shadow-blue-500/20 transition-all hover:shadow-lg hover:shadow-blue-500/40 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none">
-                    Read More
-                  </button>
-                </div>
-            </div>
-        </div>
+    <div class="py-8 px-16 bg-blue-50 text-white min-h-screen">
+        <h1 class="text-4xl font-bold mb-16 text-black text-center">Favorite Page</h1>
+        
+        <!-- Container for Favorite Posts -->
+        <div id="favoritePosts" class="grid gap-8 pb-8"></div>
     </div>
-{% endblock %}
+
+    {% block script %}
+    <script>
+        async function getFavoritePosts() {
+            return fetch("{% url 'userData:favorites_json' %}").then((res) => res.json());
+        }
+
+        async function refreshFavoritePosts() {
+            document.getElementById("favoritePosts").innerHTML = "";
+            const favoritePosts = await getFavoritePosts();
+            let htmlString = ``;
+
+            if (favoritePosts.length === 0) {
+                htmlString += `
+                    <div class="flex flex-col items-center justify-center text-center mb-8">
+                        <img class="w-32 mb-4" src="https://i.redd.it/fxgqn3rgm7jb1.jpg" alt="Image">
+                        <span class="text-black font-bold text-xl">No Favorite Posts Yet</span>
+                    </div>`;
+            } else {
+                // Set grid columns dynamically based on the number of posts
+                const gridCols = favoritePosts.length >= 4 ? 'grid-cols-4' : `grid-cols-${favoritePosts.length}`;
+                htmlString += `<div class="grid ${gridCols} gap-8 pb-8">`;
+
+                favoritePosts.forEach((post) => {
+                    const postDetailUrl = `/posts/${post.pk}/`;
+                    htmlString += `
+                    <div class="text-black max-w-xs relative rounded overflow-hidden shadow-lg h-96">
+                        <a href=${postDetailUrl}>
+                            <img class="w-full h-48 object-scale-down" src="${post.fields.foto_properti}" alt="Foto properti">
+                            <div class="px-6 py-4">
+                                <div class="font-bold line-clamp-2 text-xl mb-2">${post.fields.nama_properti}</div>
+                                <p class="text-gray-700 line-clamp-2 text-base">${post.fields.deskripsi_properti}</p>
+                            </div>
+                            <div class="px-6 pt-2 pb-2 absolute bottom-0 line-clamp-1">
+                                <span class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">${post.fields.kota_properti}, ${post.fields.negara_properti}</span>
+                            </div>
+                        </a>
+                        <button class="mx-6 bg-red-500 hover:bg-red-700 text-white px-3 py-1 rounded-full font-semibold text-sm" onclick="deleteFavorite(${post.pk})">Delete</button>
+                    </div>
+                    `;
+                });
+
+                htmlString += `</div>`;
+            }
+            document.getElementById("favoritePosts").innerHTML = htmlString;
+        }
+
+        async function deleteFavorite(postId) {
+            const response = await fetch(`{% url 'userData:delete_favorite' id=0 %}`.replace('0', postId), {
+                method: 'DELETE',
+                headers: {
+                    "X-CSRFToken": "{{ csrf_token }}"
+                },
+            });
+
+            if (response.ok) {
+                // Refresh the list of favorite posts after deletion
+                refreshFavoritePosts();
+            } else {
+                console.error('Failed to delete favorite post.');
+            }
+        }
+
+        // Call the function to refresh favorite posts on page load
+        refreshFavoritePosts();
+    </script>
+    {% endblock script %}
+{% endblock content %}
