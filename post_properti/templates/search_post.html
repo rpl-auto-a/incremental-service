@@ -6,11 +6,13 @@
 {% endblock meta %}
 
 {% block content %}
-<h2 class="text-center text-3xl block font-bold text-gray-700 py-8">Search Posts</h2>
+<h2 class="text-center text-3xl block font-bold text-gray-700 py-8">
+  Search Result{% if searched_post %} for "{{ searched_post }}"{% endif %}
+</h2>
 
 <!-- Cards -->
-<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 pb-8" id="search_results">
   {% if posts %}
+  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 pb-8" id="search_results">
     {% for post in posts %}
     <div class="search-result">
       <a href='/posts/{{post.pk}}/'>
@@ -23,25 +25,14 @@
               <div class="px-6 pt-2 pb-2">
               <span class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">{{post.kota_properti}}, {{post.negara_properti}}</span>
               </div>
-              {% if user.is_authenticated %}
-                {% if user.pk == post.user.pk %}
-                  <div class="px-6 py-4">
-                    <a href='/posts/edit_post/{{post.pk}}/'>
-                      <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded">
-                      Edit
-                      </button>
-                    </a>
-                  </div>
-                {% endif %}
-              {% endif %}
           </div>
         </a>
     </div>
-    {% endfor %}  
+    {% endfor %}
+  </div>  
   {% else %}
-    <h5 class="text-center text-2xl block text-gray-700 py-8">No properties found for "{{ searched_post }}".</h5>
+  <h5 class="text-center text-2xl block font-bold text-gray-700 py-8 w-full">No properties found for "{{ searched_post }}".</h5>
   {% endif %}
-</div>
 {% endblock content %}
 
 {% block script %}

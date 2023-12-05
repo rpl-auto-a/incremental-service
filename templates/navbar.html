@@ -41,7 +41,7 @@
                 {% endif %}
             </div>
             <div class="relative">
-                <form id="navbar-search-form" method="post" action="{% url 'search_post' %}" class="flex items-center">
+                <form id="navbar-search-form" method="post" action="{% url 'search_post' %}" class="flex items-center px-5 py-1">
                     {% csrf_token %}
                     <input
                       type="text"
@@ -49,11 +49,12 @@
                       id="navbar-search-input"
                       placeholder="Search Post"
                       class="px-4 py-2 border border-gray-300 rounded-l focus:outline-none focus:border-blue-500"
+                      required
                     />
                     <button
                       type="button"
                       onclick="validateAndSubmitSearch()"
-                      class="bg-blue-500 text-white px-4 py-2 rounded-r hover:bg-blue-700 focus:outline-none"
+                      class="bg-blue-700 text-white px-4 py-2 rounded-r hover:bg-[#003f7e] focus:outline-none"
                     >
                       Search
                     </button>
