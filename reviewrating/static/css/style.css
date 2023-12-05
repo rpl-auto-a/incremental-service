@@ -15,9 +15,7 @@ a[href*="intent"] {
 }
 
 .rating {
-    width: 190px;
     margin: 0 auto 1em;
-    font-size: 45px;
     overflow:hidden;
 }
 .rating input {
