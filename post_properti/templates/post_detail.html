@@ -37,7 +37,8 @@
             <img src="{{ post.foto_properti }}" style="border-radius: 3%;" class="max-h-[80vh] object-scale-down mx-auto" alt="...">
         </div>
     </div>
-    <div class="w-full max-w-2xl mx-auto mt-14 sm:mt-16 lg:max-w-none lg:mt-0 lg:row-span-2 lg:col-span-3 lg:pr-8">
+  
+    <div class="w-full max-w-2xl mx-auto px-4 mb-16 sm:mt-16 lg:max-w-none lg:mt-0 lg:row-span-2 lg:col-span-3 lg:pr-8">
         <div class="font-bold text-2xl pt-8 pb-4">{{ post.nama_properti }}</div>
         <div class="text-md mb-6">
             {{ post.kota_properti }}, {{post.negara_properti}} {{post.kode_pos_properti}}
@@ -58,7 +59,8 @@
                 <button class="mr-2 bg-blue-100 hover:bg-blue-200 text-blue-700 font-bold py-2 px-4 rounded">See Reviews</button>
             </a>
         </div>
-        <div class="pt-6">{{ post.deskripsi_properti }}</div>
+        <div class="pt-6 break-words">{{ post.deskripsi_properti }}</div>
     </div>
+
 </div>
 {% endblock content %}
