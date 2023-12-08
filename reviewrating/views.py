@@ -42,6 +42,7 @@ def show_reviews(request, id):
 
 @login_required(login_url="authentication:login_user")
 def add_review(request, id):
+    post = PostProperti.objects.get(pk=id)
     form = ReviewForm(request.POST or None)
 
     if form.is_valid() and request.method == "POST":
@@ -54,7 +55,7 @@ def add_review(request, id):
     else:
         messages.error(request, 'Please complete all input fields to continue.')
 
-    context = {'form': form}
+    context = {'form': form, "post": post}
     return render(request, "add_review.html", context)
 
 # Method untuk mengedit ReviewRating
