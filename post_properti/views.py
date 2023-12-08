@@ -101,7 +101,6 @@ def edit_post(request, id):
         if edit_form.is_valid():
             try:
                 edit_form.save()
-                messages.success(request, 'Post updated successfully.')
                 return redirect('show_user_posts')
             except Exception as e:
                 messages.error(request, f'Error updating post: {e}')
@@ -134,12 +133,6 @@ def search_post_by_name(request):
     if request.method == 'POST':
         searched_post = request.POST.get('searched_post')
         posts = PostProperti.objects.filter(nama_properti__icontains=searched_post)
-
-        if posts.exists():
-            messages.success(request, 'Search successful.')
-        else:
-            messages.info(request, 'Properti yang anda cari tidak tersedia.')
-
         return render(request, 'search_post.html', {'posts': posts, 'searched_post': searched_post})
     else:
         return render(request, 'search_post.html')
