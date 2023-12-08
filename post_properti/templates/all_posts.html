@@ -84,11 +84,11 @@
                             <p class="col-span-3 inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">${truncatedKota}, ${truncatedNegara}</p>
                             ${isAuthenticated ? `
                                 <button class="col-span-1 text-${isFavorite ? 'red-500' : 'gray-500'} text-xl rounded-md ${isFavorite ? 'cursor-not-allowed' : 'hover:text-red-500'}" onclick="addToFavorites(${post.pk})" ${isFavorite ? 'disabled' : ''}>
-                                    ♥︎
+                                    ❤︎
                                 </button>
                             ` 
                             : `<button class="col-span-1 text-gray-500 text-xl rounded-md hover:text-red-500" onClick="redirectToLogin()">
-                                    ♥︎
+                                    ❤
                                 </button>
                             ` 
                             }
