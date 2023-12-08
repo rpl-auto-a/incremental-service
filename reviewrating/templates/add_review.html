@@ -9,6 +9,9 @@
 {% block content %}
     <div class="flex justify-center items-center min-h-screen py-10">
         <div class="md:w-3/5 w-3/4 px-10 flex flex-col gap-2 p-5 bg-white text-white rounded-2xl shadow-lg">
+            {% if user == post.user %}
+                <p class="text-gray-600 font-medium text-center py-12">Sorry, you cannot review your own property...</p>
+            {% else %}
             <h1 class="py-5 text-2xl text-black font-bold">Add Your Review!</h1>
             <form id="add-form" method="POST">
                 {% csrf_token %}
@@ -31,6 +34,7 @@
                 </div>
             {% endif %}
             <button id="submit-btn" form="add-form" class="bg-blue-500 hover:bg-blue-700 transition duration-200 text-white font-bold py-2 px-4 rounded-full mt-3" type="submit" value="Add">Add</button>
+        {% endif %}
         </div>
     </div>
     
