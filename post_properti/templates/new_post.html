@@ -6,32 +6,32 @@
 
 {% block content %}
 <div class="max-w-xl mx-auto mt-10 space-y-4">
-    <h2 class="block font-bold text-2xl text-gray-700 text-center">New Post</h2>
+    <h2 class="block font-bold text-2xl text-[#003f7e] text-center">New Post</h2>
     <form class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4" method="post" action="{% url 'new_post' %}">
         {% csrf_token %}
         <div class="mb-4 w-full">
             <label class="block text-gray-700 font-bold mb-2" for="nama">
                 Listing title
             </label>
-            <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="nama" name="nama" type="text" placeholder="1 bedroom in beautiful apartment in Venice">
+            <input required class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="nama" name="nama" type="text" placeholder="1 bedroom in beautiful apartment in Venice">
         </div>
         <div class="mb-4">
             <label class="block text-gray-700 font-bold mb-2" for="deskripsi">
                 Description & Amenities
             </label>
-            <textarea class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="deskripsi" name="deskripsi" placeholder="What's the listing like?"></textarea>
+            <textarea required class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="deskripsi" name="deskripsi" placeholder="What's the listing like?"></textarea>
         </div>
         <div class="mb-4 w-full">
             <label class="block text-gray-700 font-bold mb-2" for="foto">
                 Add a Photo
             </label>
-            <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="foto" name="foto" type="url" placeholder="https://">
+            <input required class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="foto" name="foto" type="url" placeholder="https://">
         </div>
         <div class="mb-4 w-full">
             <label class="block text-gray-700 font-bold mb-2" for="negara">
                 Select Country
             </label>
-            <select id="negara" name="negara" onchange="fetchCities(this.value)" class="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
+            <select id="negara" name="negara" onchange="fetchCities(this.value)" required class="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
                 <!-- Options fetched asynchronously -->
             </select>
         </div>
@@ -39,7 +39,7 @@
             <label class="block text-gray-700 font-bold mb-2" for="kota">
                 Select City
             </label>
-            <select disabled id="kota" name="kota" class="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
+            <select disabled id="kota" name="kota" required class="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
                 <!-- Options fetched asynchronously -->
             </select>
         </div>
