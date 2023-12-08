@@ -56,6 +56,17 @@
 
 {% block script %}
 <script>
+    function validateAndSubmitSearch() {
+      var searchInput = document.getElementById('search-input').value.trim();
+    
+      if (searchInput !== '') {
+        document.getElementById('search-form').submit();
+      } else {
+        // Optionally, you can provide feedback to the user about the empty search field
+        window.location.href = "{% url 'show_all_posts' %}";
+      }
+    }
+
     async function searchPosts() {
       const searchedPost = document.getElementById('searched_post').value;
       const formData = new FormData();
