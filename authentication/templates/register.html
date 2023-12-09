@@ -5,7 +5,11 @@
 {% endblock meta %}
 
 {% block content %}
-<div class="container flex flex-col items-center mx-auto py-12">
+<div class="container flex flex-col items-center mx-auto gap-12 py-12">
+    <div class="flex items-center text-[#003f7e] gap-4">
+        <a href="/"><img src="https://cdn-icons-png.flaticon.com/512/2240/2240692.png" alt="RentAcross logo" width="50"></a>
+        <a class="nav-btn font-bold text-3xl relative after:content-[''] after:bg-[#005b9c] after:h-[2px] after:w-[0%] after:left-0 after:-bottom-[5px] after:rounded-xl after:absolute after:duration-300" href="/">RentAcross</a>
+    </div>
     <div class="bg-white rounded-lg shadow-2xl md:px-8 px-6 py-6 mb-8 md:max-w-xl max-w-sm">
         <h1 class="md:text-3xl text-xl font-bold text-slate-700 pb-6">Register</h1>  
         <form id="reg-form"method="POST">  
