@@ -81,6 +81,7 @@ def show_post_detail(request, id):
 
     context = {
         'post': post,
+        'nama': user_data.name,
         'nomor_wa' : user_data.nomorWA
     }
 
@@ -133,11 +134,6 @@ def search_post_by_name(request):
     if request.method == 'POST':
         searched_post = request.POST.get('searched_post')
         posts = PostProperti.objects.filter(nama_properti__icontains=searched_post)
-
-        if posts.exists():
-            messages.success(request, 'Search successful.')
-        else:
-            messages.info(request, 'Properti yang anda cari tidak tersedia.')
 
         return render(request, 'search_post.html', {'posts': posts, 'searched_post': searched_post})
     else:

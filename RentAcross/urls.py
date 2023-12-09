@@ -22,4 +22,5 @@ urlpatterns = [
     path('', include('main.urls')),
     path('auth/', include('authentication.urls')),
     path('posts/', include('post_properti.urls')),
+    path('user/', include('userData.urls')),
 ]

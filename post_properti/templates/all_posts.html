@@ -6,51 +6,147 @@
 {% endblock meta %}
 
 {% block content %}
-<h2 class="text-center text-3xl block font-bold text-gray-700 py-8">All Posts</h2>
+<div class="flex flex-col items-center gap-2 py-8">
+    <div class="text-center text-3xl block font-bold text-[#003f7e] ">All Posts</div>
+    <div>
+        <form id="search-form" method="post" action="{% url 'search_post' %}" class="flex items-center px-5 py-1">
+            {% csrf_token %}
+            <input
+              type="text"
+              name="searched_post"
+              id="search-input"
+              placeholder="Search Posts"
+              class="px-4 py-2 border border-gray-300 rounded-l-full focus:outline-none focus:border-blue-500"
+              required
+            />
+            <button
+              type="button"
+              onclick="validateAndSubmitSearch()"
+              class="bg-[#003f7e] text-white px-4 py-2 rounded-r-full hover:bg-[#003f7e] focus:outline-none"
+            >
+              Search
+            </button>
+          </form>
+    </div>
+</div>
 
 <!-- Cards -->
-<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 pb-8" id="posts">
+<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 pb-8 justify-items-stretch" id="posts">
 
 </div>
 {% endblock content %}
 
 {% block script %}
 <script>
+    // Check if the user is authenticated
+    const isAuthenticated = "{{ request.user.is_authenticated }}" == "True";
+
     async function getAllPosts() {
-        return fetch("{% url 'all_posts_json' %}").then((res) => res.json())
+        return fetch("{% url 'all_posts_json' %}").then((res) => res.json());
+    }
+
+    async function getFavoritePosts() {
+        // Only fetch favorite posts if the user is authenticated
+        if (isAuthenticated) {
+            return fetch("{% url 'userData:favorites_json' %}").then((res) => res.json());
+        } else {
+            return [];
+        }
     }
 
     async function refreshPosts() {
+        document.getElementById("posts").innerHTML = "";
+        const posts = await getAllPosts();
+        const favoritePosts = isAuthenticated? await getFavoritePosts() : [];
+        let htmlString = ``;
 
-        document.getElementById("posts").innerHTML = ""
-        const posts = await getAllPosts()
-        let htmlString = ``
-
-        if (posts.length==0) {
-            htmlString+=`<span>*No Posts Yet</span>`
+        if (posts.length == 0) {
+            htmlString += `<span>*No Posts Yet</span>`;
         } else {
             posts.forEach((post) => {
                 const postDetailUrl = `/posts/${post.pk}/`;
+                const isFavorite = isAuthenticated? favoritePosts.some(favorite => favorite.pk === post.pk) : [] ;
+                const kota = post.fields.kota_properti;
+                const truncatedKota = kota.length > 10 ? kota.substring(0, 10) + "..." : kota;
+                const negara = post.fields.negara_properti;
+                const truncatedNegara = negara.length > 10 ? negara.substring(0, 10) + "..." : negara;
+
                 htmlString += `
-                <a href=${postDetailUrl}>
-                    <div class="max-w-xs relative rounded overflow-hidden shadow-lg h-96">
-                        <img class="w-full h-48 object-scale-down" src="${post.fields.foto_properti}" alt="Foto properti">
-                        <div class="px-6 py-4">
-                            <div class="font-bold line-clamp-2 text-xl mb-2">${post.fields.nama_properti}</div>
-                            <p class="text-gray-700 line-clamp-2 text-base">${post.fields.deskripsi_properti}</p>
-                        </div>
-                        <div class="px-6 pt-2 pb-2 absolute bottom-0 line-clamp-1">
-                        <span class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">${post.fields.kota_properti}, ${post.fields.negara_properti}</span>
+                    <div class=" relative rounded overflow-hidden shadow-lg h-96">
+                        <a href=${postDetailUrl}>
+                            <img class="w-full h-48 object-scale-down" src="${post.fields.foto_properti}" alt="Foto properti">
+                            <div class="px-6 py-4">
+                                <div class="font-bold line-clamp-2 text-xl mb-2">${post.fields.nama_properti}</div>
+                                <p class="text-gray-700 line-clamp-2 text-base">${post.fields.deskripsi_properti}</p>
+                            </div>
+                        </a>
+                        <div class="px-6 pt-2 pb-2 grid-cols-4 grid absolute bottom-0 w-full">
+                            <p class="col-span-3 inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">${truncatedKota}, ${truncatedNegara}</p>
+                            ${isAuthenticated ? `
+                                <button class="col-span-1 text-${isFavorite ? 'red-500' : 'gray-500'} text-xl rounded-md ${isFavorite ? 'cursor-not-allowed' : 'hover:text-red-500'}" onclick="addToFavorites(${post.pk})" ${isFavorite ? 'disabled' : ''}>
+                                    ❤︎
+                                </button>
+                            ` 
+                            : `<button class="col-span-1 text-gray-500 text-xl rounded-md hover:text-red-500" onClick="redirectToLogin()">
+                                    ❤
+                                </button>
+                            ` 
+                            }
                         </div>
                         
                     </div>
-                </a>
-                `
-            })
+                `;
+            });
         }
-        document.getElementById("posts").innerHTML = htmlString
+        document.getElementById("posts").innerHTML = htmlString;
     }
-    refreshPosts()
 
+    async function addToFavorites(postId) {
+        if (!isAuthenticated) {
+            // Handle the case when the user is not authenticated
+            alert("Please log in to add posts to favorites.");
+            return;
+        }
+
+        try {
+            const response = await fetch(`{% url 'userData:add_favorite' post_id=0 %}`.replace('0', postId), {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": "{{ csrf_token }}"
+                },
+                body: JSON.stringify({})
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                refreshPosts();
+            } else if (response.status === 404) {
+                alert("Post not found");
+            } else {
+                alert("Error adding to favorites");
+            }
+        } catch (error) {
+            console.error("Error adding to favorites", error);
+            alert("Error adding to favorites");
+        }
+    }
+
+    refreshPosts();
+
+    function validateAndSubmitSearch() {
+      var searchInput = document.getElementById('search-input').value.trim();
+    
+      if (searchInput !== '') {
+        document.getElementById('search-form').submit();
+      } else {
+        // Optionally, you can provide feedback to the user about the empty search field
+        alert('Please enter the properties name.');
+      }
+    }
+
+    function redirectToLogin() {
+        window.location.href = "{% url 'authentication:login_user' %}";
+    }
 </script>
 {% endblock script %}

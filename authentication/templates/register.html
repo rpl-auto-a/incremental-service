@@ -5,56 +5,96 @@
 {% endblock meta %}
 
 {% block content %}
-<div>
-    <form id="reg-form" method="POST">
-        {% csrf_token %}
-        <div>
-            <label for="username">Username:</label>
-            <div>
-                <input type="text" name="username" placeholder="username123" maxlength="25" required id="username"/>
-            </div>
-        </div>
-        <div>
-            <label for="name">Full Name:</label>
-            <div>
-                <input type="text" name="name" placeholder="Your Name" required id="name"/>
-            </div>
-        </div>
-        <div>
-            <label for="nomorWA">WhatsApp Number:</label>
-            <div>
-                <input name="nomorWA" placeholder="+62123456789" maxlength="15" required id="nomorWA"/>
-            </div>
-        </div>
-        <div>
-            <label for="password1">Password:</label>
-            <div>
-                <input type="password" name="password1" required id="password1"/>
-            </div>
-        </div>
-        <div>
-            <label for="password2">Password Confirmation:</label>
-            <div>
-                <input type="password" name="password2" required id="password2"/>
-            </div>
-        </div>
-    </form>
-
-    {% if form.errors %}
-    <div class="errors mt-2 mb-2">
-    {% else %}
-    <div class="errors mt-10">
-    {% endif %}
-        {% if form.errors %}
-        {% for errors in form.errors.values %}
-        {% for error in errors %} 
-        <p class="text-red-500 text-xs">{{ error }}</p>
-        {% endfor %}
-        {% endfor %}
-        <p class="text-red-500 text-xs pt-3">Please try again.</p>
-        {% endif %}
+<div class="container flex flex-col items-center mx-auto gap-12 py-12">
+    <div class="flex items-center text-[#003f7e] gap-4">
+        <a href="/"><img src="https://cdn-icons-png.flaticon.com/512/2240/2240692.png" alt="RentAcross logo" width="50"></a>
+        <a class="nav-btn font-bold text-3xl relative after:content-[''] after:bg-[#005b9c] after:h-[2px] after:w-[0%] after:left-0 after:-bottom-[5px] after:rounded-xl after:absolute after:duration-300" href="/">RentAcross</a>
     </div>
-    <button id="submit-btn" form="reg-form" class="text-sm text-[#002F6E] w-full bg-[#b7d5eb] transition duration-200 hover:bg-[#80badc] rounded-lg py-2" type="submit" value="Register">Register</button>
-    <p class="text-sm pt-6 text-center">Already have an account? <a class="text-[#247FB8] hover:text-[#003F7E]" href="{% url 'authentication:login_user' %}">Login</a></p>
-</div>        
+    <div class="bg-white rounded-lg shadow-2xl md:px-8 px-6 py-6 mb-8 md:max-w-xl max-w-sm">
+        <h1 class="md:text-3xl text-xl font-bold text-slate-700 pb-6">Register</h1>  
+        <form id="reg-form"method="POST">  
+            {% csrf_token %}  
+            <table class="table-fixed w-full">  
+                <tr>
+                    <td class="text-gray-700 font-medium text-sm md:text-base">
+                        <label for="username">Username:</label>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <input type="text" name="username" placeholder="Username" maxlength="25" required id="username" class="bg-gray-100 text-sm md:text-base py-3 px-4 border-2 w-full focus:shadow-lg">
+                        <br>
+                        <span class="helptext text-xs">Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="pt-6 text-gray-700 font-medium text-sm md:text-base">
+                        <label for="name">Full Name:</label>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <input type="text" name="name" placeholder="Full Name" required id="name" class="bg-gray-100 text-sm md:text-base py-3 px-4 border-2 w-full focus:shadow-lg">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="pt-6 text-gray-700 font-medium text-sm md:text-base">
+                        <label for="nomorWA">WhatsApp Number:</label>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <input name="nomorWA" placeholder="+628123456789" maxlength="15" required id="nomorWA" class="bg-gray-100 text-sm md:text-base py-3 px-4 border-2 w-full focus:shadow-lg">
+                        <br>
+                        <span class="helptext text-xs">Please enter your WhatsApp number, starting with your country code at the beginning.</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="pt-6 text-gray-700 font-medium text-sm md:text-base">
+                        <label for="password1">Password:</label>
+                    </td>
+                </tr>
+                <tr>
+                    <td> 
+                        <input type="password" name="password1" required id="password1" class="bg-gray-100 text-sm md:text-base py-3 px-4 border-2 w-full focus:shadow-lg">
+                        <br>
+                        <span class="helptext text-xs">
+                            <ul class="list-disc pl-6 pt-1">
+                                <li>Your password can't be too similar to your other personal information.</li>
+                                <li>Your password must contain at least 8 characters.</li>
+                                <li>Your password can't be a commonly used password.</li>
+                                <li>Your password can't be entirely numeric.</li>
+                            </ul>
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="pt-6 text-gray-700 font-medium text-sm md:text-base">
+                        <label for="password2">Password confirmation:</label>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <input type="password" name="password2" required id="password2" class="bg-gray-100 text-sm md:text-base py-3 px-4 border-2 w-full focus:shadow-lg">
+                        <br>
+                        <span class="helptext text-xs">Enter the same password as before, for verification.</span>
+                    </td>
+                </tr>  
+            </table>  
+        </form>
+
+        {% if form.errors %}
+            <div class="errors mt-2 mb-2 text-center">
+                {% for errors in form.errors.values %}
+                    {% for error in errors %} 
+                        <p class="text-red-500 text-xs">{{ error }}</p>
+                    {% endfor %}
+                {% endfor %}
+                <p class="text-red-500 text-xs pt-3">Please try again.</p>
+            </div>
+        {% endif %}
+        <button id="submit-btn" form="reg-form" class="text-sm text-[#002F6E] w-full bg-[#b7d5eb] transition duration-200 hover:bg-[#80badc] rounded-lg py-2 mt-6" type="submit" value="Register">Register</button>
+        <p class="text-sm pt-6 text-center">Already have an account? <a class="text-[#247FB8] hover:text-[#003F7E]" href="{% url 'authentication:login_user' %}">Login</a></p>
+    </div>
+</div>
 {% endblock content %}

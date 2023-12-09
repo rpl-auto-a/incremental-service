@@ -9,11 +9,14 @@
 {% block content %}
     <div class="flex justify-center items-center min-h-screen py-10">
         <div class="md:w-3/5 w-3/4 px-10 flex flex-col gap-2 p-5 bg-white text-white rounded-2xl shadow-lg">
+            {% if user == post.user %}
+                <p class="text-gray-600 font-medium text-center py-12">Sorry, you cannot review your own property...</p>
+            {% else %}
             <h1 class="py-5 text-2xl text-black font-bold">Add Your Review!</h1>
             <form id="add-form" method="POST">
                 {% csrf_token %}
-                <div class="text-center">
-                    <div class="rating">
+                <div class="flex justify-center">
+                    <div class="rating lg:text-5xl text-4xl">
                         <input name="rating" id="r5" type="radio" value="5"/><label for="r5">★</label>
                         <input name="rating" id="r4" type="radio" value="4"/><label for="r4">★</label>
                         <input name="rating" id="r3" type="radio" value="3"/><label for="r3">★</label>
@@ -22,10 +25,16 @@
                     </div>
                 </div>
                 <div>
-                    <textarea class="w-full text-black border-gray-100 border-2 rounded-lg px-2 py-2" type="text" name="review" placeholder="Let us know your thoughts..." required id="review"></textarea>
+                    <textarea class="w-full text-black border-gray-100 border-2 rounded-lg px-2 py-2" type="text" name="review" placeholder="Let us know your thoughts..." id="review"></textarea>
                 </div>
             </form>
+            {% if form.errors %}
+                <div class="errors mt-2 mb-2 text-center">
+                    <p class="text-red-500 text-xs pt-3">Please complete all input fields to continue.</p>
+                </div>
+            {% endif %}
             <button id="submit-btn" form="add-form" class="bg-blue-500 hover:bg-blue-700 transition duration-200 text-white font-bold py-2 px-4 rounded-full mt-3" type="submit" value="Add">Add</button>
+        {% endif %}
         </div>
     </div>
     
