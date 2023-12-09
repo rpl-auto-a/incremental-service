@@ -101,7 +101,6 @@ def edit_post(request, id):
         if edit_form.is_valid():
             try:
                 edit_form.save()
-                messages.success(request, 'Post updated successfully.')
                 return redirect('show_user_posts')
             except Exception as e:
                 messages.error(request, f'Error updating post: {e}')
