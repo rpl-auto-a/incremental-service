@@ -6,7 +6,7 @@
     <div class="py-8 px-4 sm:px-8 md:px-16 lg:px-32 bg-blue-50 text-white min-h-screen">
         <h1 class="text-4xl font-bold mb-16 text-[#003f7e] text-center">Favorite Page</h1>
 
-        <div id="favoritePosts" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mx-4"></div>
+        <div id="favoritePosts" class=""></div>
     </div>
 
     {% block script %}
@@ -27,6 +27,7 @@
                         <span class="text-black font-bold text-xl">No Favorite Posts Yet</span>
                     </div>`;
             } else {
+                htmlString += `<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mx-4">`;
                 favoritePosts.forEach((post) => {
                     const postDetailUrl = `/posts/${post.pk}/`;
                     htmlString += `
