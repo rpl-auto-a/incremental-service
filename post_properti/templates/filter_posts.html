@@ -124,7 +124,6 @@
 
   document.getElementById('id_negara').addEventListener('change', function() {
     updateKotaChoices();
-    console.log("SINIIII")
   });
 
   document.addEventListener('DOMContentLoaded', function() {
@@ -137,7 +136,6 @@
   });
 
   document.getElementById('filter_form').addEventListener('submit', function(event) {
-        console.log("SINIIII submitttt")
         event.preventDefault();
         filterPosts();
     });
@@ -160,7 +158,6 @@
       } else {
           document.body.innerHTML = filteredPostsContent;
       }
-      console.log("filterrrrrr")
     }
     
     async function getFavoritePosts() {
