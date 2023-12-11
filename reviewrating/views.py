@@ -58,8 +58,7 @@ def add_review(request, id):
     context = {'form': form, "post": post}
     return render(request, "add_review.html", context)
 
-# Method untuk mengedit ReviewRating
-@login_required
+# @login_required(login_url="authentication:login_user")
 def edit_review(request, review_id):
     review = Review.objects.get(pk=review_id)
 
