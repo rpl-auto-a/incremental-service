@@ -6,7 +6,7 @@
 {% endblock meta %}
 
 {% block content %}
-  <div class="flex flex-col items-center gap-2 py-8">
+<div class="flex flex-col items-center gap-2 pt-8 pb-4">
     <div class="text-center text-3xl block font-bold text-[#003f7e] ">Filter Posts</div>
     <div class="text-center text-m block font-bold text-[#003f7e] ">Get started by choosing your desired location!</div>
 </div>
@@ -37,14 +37,13 @@
   </div>
 </form>
 
-
-<!-- <form method="get" action="{% url 'filter_posts' %}" id="filter_form" class="hidden">
-  {{ form.as_p }}
-  <input type="submit" value="Filter">
-</form> -->
-
   <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 pb-8 justify-items-stretch" id="filtered_posts">
-  {% if posts %}
+  {% if posts or not isFirstLoad %}
+      <div class="col-span-full flex justify-center items-center w-screen pt-4">
+        <div class="text-center text-xl block font-bold text-gray-700">
+          <span id="kota_display"></span><span id="negara_display"></span> 
+        </div>
+      </div>
     {% for post in posts %}
     <div class="filtered">
       <a href='/posts/{{post.pk}}/'>
@@ -62,13 +61,16 @@
     </div>
     {% endfor %}
   {% else %}
-  <h5 class="text-center text-2xl block font-bold text-gray-700 py-8 w-full">No properties found.</h5>
+  <div class="flex justify-center items-center w-screen pt-4">
+    <div class="text-center text-xl block font-bold text-gray-700">No properties found.</div>
+  </div>
   {% endif %}
   </div>  
 {% endblock content %}
 
 {% block script %}
 <script>
+  var isFirstLoad = true;
   function updateKotaChoices() {
     var negara = document.getElementById('id_negara').value;
 
@@ -101,7 +103,7 @@
 
             document.getElementById('id_kota').disabled = false;
         });
-}
+  }
 
   document.getElementById('id_negara').addEventListener('change', function() {
     updateKotaChoices();
@@ -122,7 +124,7 @@
     });
 
   async function filterPosts() {
-    const negara = document.getElementById('id_negara').value;
+      const negara = document.getElementById('id_negara').value;
       const kota = document.getElementById('id_kota').value;
 
       const response = await fetch(`{% url 'filter_posts' %}?negara=${negara}&kota=${kota}`);
@@ -140,18 +142,35 @@
           document.body.innerHTML = filteredPostsContent;
       }
 
+      if (isFirstLoad) {
+        isFirstLoad = false;
+      }
+
+      displayFilterValues(negara, kota);
+
       document.getElementById('toggleFilterForm').click();
     }
-    
-    async function getFavoritePosts() {
-        // Only fetch favorite posts if the user is authenticated
-        if (isAuthenticated) {
-            return fetch("{% url 'userData:favorites_json' %}").then((res) => res.json());
-        } else {
-            return [];
-        }
-    }
 
-    const isAuthenticated = "{{ request.user.is_authenticated }}" == "True";
+  function displayFilterValues(negara, kota) {
+    var negaraDisplay = document.getElementById('negara_display');
+    var kotaDisplay = document.getElementById('kota_display');
+    if (isFirstLoad) {
+      negaraDisplay.innerText = '';
+      kotaDisplay.innerText = '';
+    } else {
+      kotaDisplay.innerText = "Filtering results for "
+      if (negara && kota) {
+          negaraDisplay.innerText = negara;
+          kotaDisplay.innerText += kota + ", ";
+      } else if (negara) {
+          negaraDisplay.innerText = negara;
+          kotaDisplay.innerText += '';
+      } else {
+          negaraDisplay.innerText = '';
+          kotaDisplay.innerText += '';
+      }
+    }
+    
+  }
 </script>
 {% endblock script %}
