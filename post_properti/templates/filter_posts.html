@@ -9,8 +9,8 @@
     <input type="submit" value="Filter">
   </form>
 
+  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 pb-8 justify-items-stretch" id="filtered_posts"></div>
   {% if posts %}
-  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 pb-8 justify-items-stretch" id="filtered_posts">
     {% for post in posts %}
     <div class="filtered">
       <a href='/posts/{{post.pk}}/'>
@@ -27,71 +27,81 @@
       </a>
     </div>
     {% endfor %}
-  </div>  
   {% else %}
   <h5 class="text-center text-2xl block font-bold text-gray-700 py-8 w-full">No properties found.</h5>
   {% endif %}
-  {% endblock content %}
+  </div>  
+{% endblock content %}
 
-  {% block script %}
-  <script>
-  function updateKotaChoices() {
-    var negara = document.getElementById('id_negara').value;
+{% block script %}
+<script>
+
+function updateKotaChoices() {
+  var negara = document.getElementById('id_negara').value;
+
+    if (!negara) {
+        document.getElementById('id_negara').value = 'Empty';
+        document.getElementById('id_kota').value = 'Empty';
+
+        document.getElementById('id_negara').disabled = true;
+        document.getElementById('id_kota').disabled = true;
+        return;
+    }
 
     fetch(`{% url 'get_kota_choices' %}?negara=${negara}`)
-      .then(response => response.json())
-      .then(data => {
-        var kotaSelect = document.getElementById('id_kota');
-        kotaSelect.innerHTML = '';
+        .then(response => response.json())
+        .then(data => {
+            var kotaSelect = document.getElementById('id_kota');
+            kotaSelect.innerHTML = '';
 
-        var allOption = document.createElement('option');
+            var allOption = document.createElement('option');
             allOption.value = '';
             allOption.text = 'All';
             kotaSelect.appendChild(allOption);
 
-        data.choices.forEach(function(value) {
-          var option = document.createElement('option');
-          option.value = value;
-          option.text = value;
-          kotaSelect.appendChild(option);
+            data.choices.forEach(function(value) {
+                var option = document.createElement('option');
+                option.value = value;
+                option.text = value;
+                kotaSelect.appendChild(option);
+            });
+
+            document.getElementById('id_negara').disabled = false;
+            document.getElementById('id_kota').disabled = false;
+
+            document.getElementById('filter_form').insertAdjacentHTML('beforeend', '<input type="hidden" name="negara" value="' + negara + '">');
+            document.getElementById('filter_form').insertAdjacentHTML('beforeend', '<input type="hidden" name="kota" value="' + document.getElementById('id_kota').value + '">');
         });
+}
 
-        document.getElementById('filter_form').insertAdjacentHTML('beforeend', '<input type="hidden" name="negara" value="' + negara + '">');
-        document.getElementById('filter_form').insertAdjacentHTML('beforeend', '<input type="hidden" name="kota" value="' + document.getElementById('id_kota').value + '">');
-      });
-  }
+document.getElementById('id_negara').addEventListener('change', function() {
+  updateKotaChoices();
+});
 
-  document.getElementById('id_negara').addEventListener('change', function() {
-    updateKotaChoices();
-  });
+document.addEventListener('DOMContentLoaded', function() {
+  updateKotaChoices();
+});
 
-  document.addEventListener('DOMContentLoaded', function() {
-    updateKotaChoices();
-  });
+async function filterPosts() {
+  const negara = document.getElementById('id_negara').value;
+  const kota = document.getElementById('id_kota').value;
 
-  async function filterPosts() {
-    const negara = document.getElementById('id_negara').value;
-    const kota = document.getElementById('id_kota').value;
+  const response = await fetch(`{% url 'filter_posts' %}?negara=${negara}&kota=${kota}`);
+  const result = await response.text();
 
-    const response = await fetch(`{% url 'filter_posts' %}?negara=${negara}&kota=${kota}`);
-    const result = await response.text();
+  const tempElement = document.createElement('div');
+  tempElement.innerHTML = result;
 
-    const tempElement = document.createElement('div');
-    tempElement.innerHTML = result;
+  const filteredPostsContent = tempElement.querySelector('#filtered_posts').innerHTML;
 
-    const filteredPostsContent = tempElement.querySelector('#filtered_posts').innerHTML;
+  document.getElementById('filtered_posts').innerHTML = filteredPostsContent;
 
-    const filteredPostsDiv = document.getElementById('filtered_posts');
-    if (filteredPostsDiv) {
-        filteredPostsDiv.innerHTML = filteredPostsContent;
-    } else {
-        document.body.innerHTML = filteredPostsContent;
-    }
-  }
+  console.log(negara, kota, result)
+}
 
   document.getElementById('filter_form').addEventListener('submit', function(event) {
-    event.preventDefault();
-    filterPosts();
+      event.preventDefault();
+      filterPosts();
   });
-  </script>
-  {% endblock script %}
+</script>
+{% endblock script %}
