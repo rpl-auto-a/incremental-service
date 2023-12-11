@@ -160,6 +160,8 @@ def filter_posts(request):
     else:
         posts = PostProperti.objects.filter(negara_properti=negara)
 
+    print(posts)
+
     return render(request, 'filter_posts.html', {'posts': posts, 'form': form})
 
 def get_kota_choices(request):
