@@ -1,72 +1,157 @@
 <!-- TODO -> PINDAHIN KE NAVBAR NANTI  -->
 {% extends 'base.html' %}
 
+{% block meta %}
+<title>Filter Posts | RentAcross</title>
+{% endblock meta %}
+
 {% block content %}
-  <h2>Filter Posts</h2>
+  <div class="flex flex-col items-center gap-2 py-8">
+    <div class="text-center text-3xl block font-bold text-[#003f7e] ">Filter Posts</div>
+    <div class="text-center text-m block font-bold text-[#003f7e] ">Get started by choosing your desired location!</div>
+</div>
 
-  <form method="get" action="{% url 'filter_posts' %}" id="filter_form">
-    {{ form.as_p }}
-    <input type="submit" value="Filter">
-  </form>
+<div class="flex items-center justify-center mb-2">
+  <button
+    type="button"
+    id="toggleFilterForm"
+    class="bg-[#003f7e] text-white px-4 py-2 rounded-full hover:bg-[#003f7e] focus:outline-none"
+  >
+    Toggle Filter
+  </button>
+</div>
 
+<form method="get" action="{% url 'filter_posts' %}" id="filter_form" class="bg-white p-4 rounded-lg shadow-md w-64 mx-auto my-5 hidden">
+  <div class="mb-2">
+      <label for="id_negara" class="block text-gray-700 text-s font-bold mb-1">Country</label>
+      {{ form.negara }}
+  </div>
+
+  <div class="mb-2">
+      <label for="id_kota" class="block text-gray-700 text-s font-bold mb-1">City</label>
+      {{ form.kota }}
+  </div>
+
+  <div class="flex items-center justify-end">
+      <button type="submit" class="bg-[#003f7e] text-white px-3 py-1 rounded-full hover:bg-[#003f7e] focus:outline-none text-s">Filter</button>
+  </div>
+</form>
+
+
+<!-- <form method="get" action="{% url 'filter_posts' %}" id="filter_form" class="hidden">
+  {{ form.as_p }}
+  <input type="submit" value="Filter">
+</form> -->
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 pb-8 justify-items-stretch" id="filtered_posts">
   {% if posts %}
-    <h3>Filtered Posts:</h3>
-    <ul>
-      {% for post in posts %}
-        <li>{{ post.nama_properti }}</li>
-      {% endfor %}
-    </ul>
+    {% for post in posts %}
+    <div class="filtered">
+      <a href='/posts/{{post.pk}}/'>
+        <div class="relative rounded overflow-hidden shadow-lg h-96">
+            <img class="w-full h-48 object-scale-down" src="{{post.foto_properti}}" alt="Foto properti">
+            <div class="px-6 py-4">
+                <div class="font-bold line-clamp-2 text-xl mb-2">{{ post.nama_properti }}</div>
+                <p class="text-gray-700 line-clamp-2 text-base">{{ post.deskripsi_properti }}</p>
+            </div>
+            <div class="px-6 pt-2 pb-2 grid-cols-4 grid absolute bottom-0 w-full">
+                <p class="col-span-3 inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">{{ post.kota_properti }}, {{ post.negara_properti }}</p>
+            </div>
+      </div>
+      </a>
+    </div>
+    {% endfor %}
   {% else %}
-    <p>Pilihlah Negara dan Kota yang valid!</p>
+  <h5 class="text-center text-2xl block font-bold text-gray-700 py-8 w-full">No properties found.</h5>
   {% endif %}
+  </div>  
+{% endblock content %}
 
-  <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-  <script>
-    // Ensure jQuery is included
+{% block script %}
+<script>
+  function updateKotaChoices() {
+    var negara = document.getElementById('id_negara').value;
 
-    // Function to update Kota choices based on selected Negara
-    function updateKotaChoices() {
-      var negara = $('#id_negara').val();
-      $.ajax({
-        url: `{% url 'get_kota_choices' %}`,
-        data: {'negara': negara},
-        dataType: 'json',
-        success: function(data) {
-          var kotaSelect = $('#id_kota');
-          kotaSelect.empty();
-          $.each(data.choices, function(key, value) {
-            kotaSelect.append($('<option></option>').attr('value', value).text(value));
-          });
+    if (!negara) {
+        document.getElementById('id_negara').value = 'Empty';
+        document.getElementById('id_kota').value = 'Empty';
 
-          // Add hidden input fields with current values of negara and kota
-          $('#filterForm').append('<input type="hidden" name="negara" value="' + negara + '">');
-          $('#filterForm').append('<input type="hidden" name="kota" value="' + $('#id_kota').val() + '">');
+        document.getElementById('id_negara').disabled = true;
+        document.getElementById('id_kota').disabled = true;
+        return;
+    }
+
+    fetch(`{% url 'get_kota_choices' %}?negara=${negara}`)
+        .then(response => response.json())
+        .then(data => {
+            var kotaSelect = document.getElementById('id_kota');
+            kotaSelect.innerHTML = '';
+
+            var allOption = document.createElement('option');
+            allOption.value = '';
+            allOption.text = 'All';
+            kotaSelect.appendChild(allOption);
+
+            data.choices.forEach(function (value) {
+                var option = document.createElement('option');
+                option.value = value;
+                option.text = value;
+                kotaSelect.appendChild(option);
+            });
+
+            document.getElementById('id_kota').disabled = false;
+        });
+}
+
+  document.getElementById('id_negara').addEventListener('change', function() {
+    updateKotaChoices();
+  });
+
+  document.addEventListener('DOMContentLoaded', function() {
+    updateKotaChoices();
+  });
+
+  document.getElementById('toggleFilterForm').addEventListener('click', function() {
+    document.getElementById('filter_form').classList.toggle('hidden');
+    updateKotaChoices();
+  });
+
+  document.getElementById('filter_form').addEventListener('submit', function(event) {
+        event.preventDefault();
+        filterPosts();
+    });
+
+  async function filterPosts() {
+    const negara = document.getElementById('id_negara').value;
+      const kota = document.getElementById('id_kota').value;
+
+      const response = await fetch(`{% url 'filter_posts' %}?negara=${negara}&kota=${kota}`);
+      const result = await response.text();
+
+      const tempElement = document.createElement('div');
+      tempElement.innerHTML = result;
+
+      const filteredPostsContent = tempElement.querySelector('#filtered_posts').innerHTML;
+
+      const filteredPostsDiv = document.getElementById('filtered_posts');
+      if (filteredPostsDiv) {
+          filteredPostsDiv.innerHTML = filteredPostsContent;
+      } else {
+          document.body.innerHTML = filteredPostsContent;
+      }
+
+      document.getElementById('toggleFilterForm').click();
+    }
+    
+    async function getFavoritePosts() {
+        // Only fetch favorite posts if the user is authenticated
+        if (isAuthenticated) {
+            return fetch("{% url 'userData:favorites_json' %}").then((res) => res.json());
+        } else {
+            return [];
         }
-      });
     }
 
-    // Attach the update function to the change event of Negara dropdown
-    $('#id_negara').change(function() {
-      updateKotaChoices();
-    });
-
-    // Initialize Kota choices on page load
-    $(document).ready(function() {
-      updateKotaChoices();
-    });
-
-    async function filterPosts() {
-        const negara = $('#id_negara').val();
-        const kota = $('#id_kota').val();
-
-        const response = await fetch(`{% url 'filter_posts' %}?negara=${negara}&kota=${kota}`);
-        const result = await response.text();
-    }
-
-    // Attach the function to the form submission event
-    document.getElementById('filter_form').addEventListener('submit', function(event) {
-        event.preventDefault();  // Prevent the default form submission
-        filterPosts();  // Call the filterPosts function
-    });
-  </script>
-{% endblock %}
+    const isAuthenticated = "{{ request.user.is_authenticated }}" == "True";
+</script>
+{% endblock script %}
