@@ -7,27 +7,8 @@
 
 {% block content %}
   <div class="flex flex-col items-center gap-2 py-8">
-    <div class="text-center text-3xl block font-bold text-[#003f7e] ">All Posts</div>
-    <div>
-        <form id="search-form" method="post" action="{% url 'search_post' %}" class="flex items-center px-5 py-1">
-            {% csrf_token %}
-            <input
-              type="text"
-              name="searched_post"
-              id="search-input"
-              placeholder="Search Posts"
-              class="px-4 py-2 border border-gray-300 rounded-l-full focus:outline-none focus:border-blue-500"
-              required
-            />
-            <button
-              type="button"
-              onclick="validateAndSubmitSearch()"
-              class="bg-[#003f7e] text-white px-4 py-2 rounded-r-full hover:bg-[#003f7e] focus:outline-none"
-            >
-              Search
-            </button>
-          </form>
-    </div>
+    <div class="text-center text-3xl block font-bold text-[#003f7e] ">Filter Posts</div>
+    <div class="text-center text-m block font-bold text-[#003f7e] ">Get started by choosing your desired location!</div>
 </div>
 
 <div class="flex items-center justify-center mb-2">
@@ -172,15 +153,5 @@
     }
 
     const isAuthenticated = "{{ request.user.is_authenticated }}" == "True";
-
-    function validateAndSubmitSearch() {
-      var searchInput = document.getElementById('search-input').value.trim();
-    
-      if (searchInput !== '') {
-        document.getElementById('search-form').submit();
-      } else {
-        alert('Please enter the properties name.');
-      }
-    }
 </script>
 {% endblock script %}
