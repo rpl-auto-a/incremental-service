@@ -5,6 +5,13 @@
 {% endblock meta %}
 
 {% block content %}
+{% if messages %}
+<div class="bg-green-500 text-white p-4 mb-4ç">
+  {% for message in messages %}
+    {{ message }}
+  {% endfor %}
+</div>
+{% endif %}
 <h2 class="text-center text-3xl block font-bold text-[#003f7e] py-8">User Posts</h2>
 
 <!-- Cards -->

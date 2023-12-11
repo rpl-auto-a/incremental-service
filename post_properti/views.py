@@ -66,6 +66,9 @@ def new_post(request):
             post_properti_instance = form.save(commit=False)
             post_properti_instance.user = request.user
             post_properti_instance.save()
+
+            messages.success(request, 'Your post has been created successfully.')
+
             return redirect(reverse('show_user_posts'))
         else:
             return render(request, "new_post.html", {'form': form})
@@ -76,16 +79,19 @@ def show_all_posts(request):
     return render(request, 'all_posts.html')
 
 def show_post_detail(request, id):
-    post = PostProperti.objects.get(pk=id)
-    user_data = UserData.objects.get(user=post.user)
+    try:
+        post = PostProperti.objects.get(pk=id)
+        user_data = UserData.objects.get(user=post.user)
 
-    context = {
-        'post': post,
-        'nama': user_data.name,
-        'nomor_wa' : user_data.nomorWA
-    }
+        context = {
+            'post': post,
+            'nama': user_data.name,
+            'nomor_wa': user_data.nomorWA
+        }
 
-    return render(request, 'post_detail.html', context)
+        return render(request, 'post_detail.html', context)
+    except PostProperti.DoesNotExist:
+        return render(request, 'post_not_found.html')
 
 def all_posts_json(request):
     posts = PostProperti.objects.all()
@@ -116,9 +122,10 @@ def edit_post(request, id):
 def show_user_posts(request):
     user_logged_in = request.user
     data_post_properti = PostProperti.objects.filter(user=user_logged_in)
-
+    messages_to_display = messages.get_messages(request)
     context = {
         'list_properti' : data_post_properti,
+        'messages': messages_to_display,
     }
     return render(request, 'show_user_posts.html', context)
 
