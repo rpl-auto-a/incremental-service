@@ -7,8 +7,8 @@ class PostPropertiForm(forms.ModelForm):
         fields = ['nama_properti', 'deskripsi_properti', 'foto_properti', 'negara_properti', 'kota_properti', 'kode_pos_properti']
 
 class FilterForm(forms.Form):
-    negara = forms.ChoiceField(label='Negara', choices=[])
-    kota = forms.ChoiceField(label='Kota', choices=[], required=False)
+    negara = forms.ChoiceField(label='Country', choices=[])
+    kota = forms.ChoiceField(label='City', choices=[], required=False)
 
     def set_kota_choices(self, kota_choices):
         self.fields['kota'].choices = kota_choices
