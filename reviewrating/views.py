@@ -68,16 +68,11 @@ def edit_review(request, id, reviewid):
             try:
                 edit_form.save()
                 messages.success(request, 'Review updated successfully.')
-                print(111)
                 return redirect(reverse('review:show_reviews', kwargs={"id": id}))
             except Exception as e:
-                print(222)
                 messages.error(request, f'Error updating review: {e}')
         else:
-            print(333)
             messages.error(request, 'Error updating review. Please correct the form errors.')
     else:
-        print(444)
         edit_form = ReviewForm(instance=review)
-    print(555)
     return render(request, 'edit_review.html', {'form': edit_form, 'review': review})
