@@ -76,16 +76,19 @@ def show_all_posts(request):
     return render(request, 'all_posts.html')
 
 def show_post_detail(request, id):
-    post = PostProperti.objects.get(pk=id)
-    user_data = UserData.objects.get(user=post.user)
+    try:
+        post = PostProperti.objects.get(pk=id)
+        user_data = UserData.objects.get(user=post.user)
 
-    context = {
-        'post': post,
-        'nama': user_data.name,
-        'nomor_wa' : user_data.nomorWA
-    }
+        context = {
+            'post': post,
+            'nama': user_data.name,
+            'nomor_wa': user_data.nomorWA
+        }
 
-    return render(request, 'post_detail.html', context)
+        return render(request, 'post_detail.html', context)
+    except PostProperti.DoesNotExist:
+        return render(request, 'post_not_found.html')
 
 def all_posts_json(request):
     posts = PostProperti.objects.all()
