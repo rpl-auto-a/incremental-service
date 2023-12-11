@@ -58,10 +58,9 @@ def add_review(request, id):
     context = {'form': form, "post": post}
     return render(request, "add_review.html", context)
 
-# Method untuk mengedit ReviewRating
-@login_required
-def edit_review(request, review_id):
-    review = Review.objects.get(pk=review_id)
+# @login_required(login_url="authentication:login_user")
+def edit_review(request, id, reviewid):
+    review = Review.objects.get(pk=reviewid)
 
     if request.method == 'POST':
         edit_form = ReviewForm(request.POST, request.FILES, instance=review)
@@ -69,12 +68,11 @@ def edit_review(request, review_id):
             try:
                 edit_form.save()
                 messages.success(request, 'Review updated successfully.')
-                return redirect('show_reviews')
+                return redirect(reverse('review:show_reviews', kwargs={"id": id}))
             except Exception as e:
                 messages.error(request, f'Error updating review: {e}')
         else:
             messages.error(request, 'Error updating review. Please correct the form errors.')
     else:
         edit_form = ReviewForm(instance=review)
-    
     return render(request, 'edit_review.html', {'form': edit_form, 'review': review})

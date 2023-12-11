@@ -1,18 +1,36 @@
-<!-- temporary placeholder -->
-{% extends 'base.html' %}
+{% extends "base.html" %}
+{% load static %}
+
+{% block meta %}
+    <title>Edit Review | RentAcross</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+{% endblock meta %}
 
 {% block content %}
-  <h2>Edit Review</h2>
-  <form method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Save Changes</button>
-    <button type="button" onclick="cancelUpdate()">Cancel</button>
-  </form>
-
-    <script>
-        function cancelUpdate() {
-            window.location.href = "{% url 'show_reviews' %}";
-        }
-    </script>
-{% endblock %}
+    <div class="flex justify-center items-center min-h-screen py-10">
+        <div class="md:w-3/5 w-3/4 px-10 flex flex-col gap-2 p-5 bg-white text-white rounded-2xl shadow-lg">
+            <h1 class="py-5 text-2xl text-black font-bold">Edit Your Review!</h1>
+            <form id="edit-form" method="POST">
+                {% csrf_token %}
+                <div class="flex justify-center">
+                    <div class="rating lg:text-5xl text-4xl">
+                        <input name="rating" id="r5" type="radio" value="5" {% if form.rating.value == 5 %}checked{% endif %}/><label for="r5">★</label>
+                        <input name="rating" id="r4" type="radio" value="4" {% if form.rating.value == 4 %}checked{% endif %}/><label for="r4">★</label>
+                        <input name="rating" id="r3" type="radio" value="3" {% if form.rating.value == 3 %}checked{% endif %}/><label for="r3">★</label>
+                        <input name="rating" id="r2" type="radio" value="2" {% if form.rating.value == 2 %}checked{% endif %}/><label for="r2">★</label>
+                        <input name="rating" id="r1" type="radio" value="1" {% if form.rating.value == 1 %}checked{% endif %}/><label for="r1">★</label>
+                    </div>
+                </div>
+                <div>
+                    <textarea class="w-full text-black border-gray-100 border-2 rounded-lg px-2 py-2" type="text" name="review" id="review">{{ form.review.value|default_if_none:'' }}</textarea>
+                </div>
+            </form>
+            {% if form.errors %}
+                <div class="errors mt-2 mb-2 text-center">
+                    <p class="text-red-500 text-xs pt-3">Please modify and complete all input fields to continue.</p>
+                </div>
+            {% endif %}
+            <button id="submit-btn" form="edit-form" class="bg-blue-500 hover:bg-blue-700 transition duration-200 text-white font-bold py-2 px-4 rounded-full mt-3" type="submit" value="Submit">Submit</button>
+        </div>
+    </div>
+{% endblock content %}
