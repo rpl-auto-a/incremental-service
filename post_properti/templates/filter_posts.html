@@ -1,13 +1,66 @@
 <!-- TODO -> PINDAHIN KE NAVBAR NANTI  -->
 {% extends 'base.html' %}
 
-{% block content %}
-  <h2>Filter Posts</h2>
+{% block meta %}
+<title>Filter Posts | RentAcross</title>
+{% endblock meta %}
 
-  <form method="get" action="{% url 'filter_posts' %}" id="filter_form">
-    {{ form.as_p }}
-    <input type="submit" value="Filter">
-  </form>
+{% block content %}
+  <div class="flex flex-col items-center gap-2 py-8">
+    <div class="text-center text-3xl block font-bold text-[#003f7e] ">All Posts</div>
+    <div>
+        <form id="search-form" method="post" action="{% url 'search_post' %}" class="flex items-center px-5 py-1">
+            {% csrf_token %}
+            <input
+              type="text"
+              name="searched_post"
+              id="search-input"
+              placeholder="Search Posts"
+              class="px-4 py-2 border border-gray-300 rounded-l-full focus:outline-none focus:border-blue-500"
+              required
+            />
+            <button
+              type="button"
+              onclick="validateAndSubmitSearch()"
+              class="bg-[#003f7e] text-white px-4 py-2 rounded-r-full hover:bg-[#003f7e] focus:outline-none"
+            >
+              Search
+            </button>
+          </form>
+    </div>
+</div>
+
+<div class="flex items-center justify-center mb-2">
+  <button
+    type="button"
+    id="toggleFilterForm"
+    class="bg-[#003f7e] text-white px-4 py-2 rounded-full hover:bg-[#003f7e] focus:outline-none"
+  >
+    Toggle Filter
+  </button>
+</div>
+
+<form method="get" action="{% url 'filter_posts' %}" id="filter_form" class="bg-white p-4 rounded-lg shadow-md w-64 mx-auto my-5 hidden">
+  <div class="mb-2">
+      <label for="id_negara" class="block text-gray-700 text-s font-bold mb-1">Country</label>
+      {{ form.negara }}
+  </div>
+
+  <div class="mb-2">
+      <label for="id_kota" class="block text-gray-700 text-s font-bold mb-1">City</label>
+      {{ form.kota }}
+  </div>
+
+  <div class="flex items-center justify-end">
+      <button type="submit" class="bg-[#003f7e] text-white px-3 py-1 rounded-full hover:bg-[#003f7e] focus:outline-none text-s">Filter</button>
+  </div>
+</form>
+
+
+<!-- <form method="get" action="{% url 'filter_posts' %}" id="filter_form" class="hidden">
+  {{ form.as_p }}
+  <input type="submit" value="Filter">
+</form> -->
 
   <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 pb-8 justify-items-stretch" id="filtered_posts">
   {% if posts %}
@@ -35,9 +88,8 @@
 
 {% block script %}
 <script>
-
-function updateKotaChoices() {
-  var negara = document.getElementById('id_negara').value;
+  function updateKotaChoices() {
+    var negara = document.getElementById('id_negara').value;
 
     if (!negara) {
         document.getElementById('id_negara').value = 'Empty';
@@ -59,55 +111,77 @@ function updateKotaChoices() {
             allOption.text = 'All';
             kotaSelect.appendChild(allOption);
 
-            data.choices.forEach(function(value) {
+            data.choices.forEach(function (value) {
                 var option = document.createElement('option');
                 option.value = value;
                 option.text = value;
                 kotaSelect.appendChild(option);
             });
 
-            document.getElementById('id_negara').disabled = false;
             document.getElementById('id_kota').disabled = false;
-
-            document.getElementById('filter_form').insertAdjacentHTML('beforeend', '<input type="hidden" name="negara" value="' + negara + '">');
-            document.getElementById('filter_form').insertAdjacentHTML('beforeend', '<input type="hidden" name="kota" value="' + document.getElementById('id_kota').value + '">');
         });
 }
 
-document.getElementById('id_negara').addEventListener('change', function() {
-  updateKotaChoices();
-});
+  document.getElementById('id_negara').addEventListener('change', function() {
+    updateKotaChoices();
+    console.log("SINIIII")
+  });
 
-document.addEventListener('DOMContentLoaded', function() {
-  updateKotaChoices();
-});
+  document.addEventListener('DOMContentLoaded', function() {
+    updateKotaChoices();
+  });
 
-async function filterPosts() {
-  const negara = document.getElementById('id_negara').value;
-    const kota = document.getElementById('id_kota').value;
-
-    const response = await fetch(`{% url 'filter_posts' %}?negara=${negara}&kota=${kota}`);
-    const result = await response.text();
-
-    const tempElement = document.createElement('div');
-    tempElement.innerHTML = result;
-
-    const filteredPostsContent = tempElement.querySelector('#filtered_posts').innerHTML;
-
-    const filteredPostsDiv = document.getElementById('filtered_posts');
-    if (filteredPostsDiv) {
-        filteredPostsDiv.innerHTML = filteredPostsContent;
-    } else {
-        // Handle the case when no properties are found
-        document.body.innerHTML = filteredPostsContent;
-    }
-  }
-
-  filterPosts();
+  document.getElementById('toggleFilterForm').addEventListener('click', function() {
+    document.getElementById('filter_form').classList.toggle('hidden');
+    updateKotaChoices();
+  });
 
   document.getElementById('filter_form').addEventListener('submit', function(event) {
-      event.preventDefault();
-      filterPosts();
-  });
+        console.log("SINIIII submitttt")
+        event.preventDefault();
+        filterPosts();
+    });
+
+  async function filterPosts() {
+    const negara = document.getElementById('id_negara').value;
+      const kota = document.getElementById('id_kota').value;
+
+      const response = await fetch(`{% url 'filter_posts' %}?negara=${negara}&kota=${kota}`);
+      const result = await response.text();
+
+      const tempElement = document.createElement('div');
+      tempElement.innerHTML = result;
+
+      const filteredPostsContent = tempElement.querySelector('#filtered_posts').innerHTML;
+
+      const filteredPostsDiv = document.getElementById('filtered_posts');
+      if (filteredPostsDiv) {
+          filteredPostsDiv.innerHTML = filteredPostsContent;
+      } else {
+          document.body.innerHTML = filteredPostsContent;
+      }
+      console.log("filterrrrrr")
+    }
+    
+    async function getFavoritePosts() {
+        // Only fetch favorite posts if the user is authenticated
+        if (isAuthenticated) {
+            return fetch("{% url 'userData:favorites_json' %}").then((res) => res.json());
+        } else {
+            return [];
+        }
+    }
+
+    const isAuthenticated = "{{ request.user.is_authenticated }}" == "True";
+
+    function validateAndSubmitSearch() {
+      var searchInput = document.getElementById('search-input').value.trim();
+    
+      if (searchInput !== '') {
+        document.getElementById('search-form').submit();
+      } else {
+        alert('Please enter the properties name.');
+      }
+    }
 </script>
 {% endblock script %}
