@@ -14,15 +14,15 @@
                 {% csrf_token %}
                 <div class="flex justify-center">
                     <div class="rating lg:text-5xl text-4xl">
-                        <input name="rating" id="r5" type="radio" value="5"/><label for="r5">★</label>
-                        <input name="rating" id="r4" type="radio" value="4"/><label for="r4">★</label>
-                        <input name="rating" id="r3" type="radio" value="3"/><label for="r3">★</label>
-                        <input name="rating" id="r2" type="radio" value="2"/><label for="r2">★</label>
-                        <input name="rating" id="r1" type="radio" value="1"/><label for="r1">★</label>
+                        <input name="rating" id="r5" type="radio" value="5" {% if form.rating.value == 5 %}checked{% endif %}/><label for="r5">★</label>
+                        <input name="rating" id="r4" type="radio" value="4" {% if form.rating.value == 4 %}checked{% endif %}/><label for="r4">★</label>
+                        <input name="rating" id="r3" type="radio" value="3" {% if form.rating.value == 3 %}checked{% endif %}/><label for="r3">★</label>
+                        <input name="rating" id="r2" type="radio" value="2" {% if form.rating.value == 2 %}checked{% endif %}/><label for="r2">★</label>
+                        <input name="rating" id="r1" type="radio" value="1" {% if form.rating.value == 1 %}checked{% endif %}/><label for="r1">★</label>
                     </div>
                 </div>
                 <div>
-                    <textarea class="w-full text-black border-gray-100 border-2 rounded-lg px-2 py-2" type="text" name="review" placeholder="Let us know your thoughts..." id="review"></textarea>
+                    <textarea class="w-full text-black border-gray-100 border-2 rounded-lg px-2 py-2" type="text" name="review" id="review">{{ form.review.value|default_if_none:'' }}</textarea>
                 </div>
             </form>
             {% if form.errors %}
@@ -31,7 +31,6 @@
                 </div>
             {% endif %}
             <button id="submit-btn" form="edit-form" class="bg-blue-500 hover:bg-blue-700 transition duration-200 text-white font-bold py-2 px-4 rounded-full mt-3" type="submit" value="Submit">Submit</button>
-        {% endif %}
         </div>
     </div>
 {% endblock content %}
