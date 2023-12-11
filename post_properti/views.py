@@ -66,6 +66,9 @@ def new_post(request):
             post_properti_instance = form.save(commit=False)
             post_properti_instance.user = request.user
             post_properti_instance.save()
+
+            messages.success(request, 'Your post has been created successfully.')
+
             return redirect(reverse('show_user_posts'))
         else:
             return render(request, "new_post.html", {'form': form})
@@ -119,9 +122,10 @@ def edit_post(request, id):
 def show_user_posts(request):
     user_logged_in = request.user
     data_post_properti = PostProperti.objects.filter(user=user_logged_in)
-
+    messages_to_display = messages.get_messages(request)
     context = {
         'list_properti' : data_post_properti,
+        'messages': messages_to_display,
     }
     return render(request, 'show_user_posts.html', context)
 
