@@ -9,7 +9,7 @@
     <input type="submit" value="Filter">
   </form>
 
-  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 pb-8 justify-items-stretch" id="filtered_posts"></div>
+  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 pb-8 justify-items-stretch" id="filtered_posts">
   {% if posts %}
     {% for post in posts %}
     <div class="filtered">
@@ -84,20 +84,26 @@ document.addEventListener('DOMContentLoaded', function() {
 
 async function filterPosts() {
   const negara = document.getElementById('id_negara').value;
-  const kota = document.getElementById('id_kota').value;
+    const kota = document.getElementById('id_kota').value;
 
-  const response = await fetch(`{% url 'filter_posts' %}?negara=${negara}&kota=${kota}`);
-  const result = await response.text();
+    const response = await fetch(`{% url 'filter_posts' %}?negara=${negara}&kota=${kota}`);
+    const result = await response.text();
 
-  const tempElement = document.createElement('div');
-  tempElement.innerHTML = result;
+    const tempElement = document.createElement('div');
+    tempElement.innerHTML = result;
 
-  const filteredPostsContent = tempElement.querySelector('#filtered_posts').innerHTML;
+    const filteredPostsContent = tempElement.querySelector('#filtered_posts').innerHTML;
 
-  document.getElementById('filtered_posts').innerHTML = filteredPostsContent;
+    const filteredPostsDiv = document.getElementById('filtered_posts');
+    if (filteredPostsDiv) {
+        filteredPostsDiv.innerHTML = filteredPostsContent;
+    } else {
+        // Handle the case when no properties are found
+        document.body.innerHTML = filteredPostsContent;
+    }
+  }
 
-  console.log(negara, kota, result)
-}
+  filterPosts();
 
   document.getElementById('filter_form').addEventListener('submit', function(event) {
       event.preventDefault();
